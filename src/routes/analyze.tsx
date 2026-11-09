@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Upload, Play, Pause, Square, Repeat } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { UpgradeNotice } from "@/components/UpgradeNotice";
-import { useOne } from "@/lib/usage";
+import { takeFreeUse } from "@/lib/usage";
 import { chordSummary, detectChords, detectSections, frameChroma, type ChordSeg, type Section } from "@/lib/chords";
 import { computeChroma, detectKey, detectTempo, loudness, NOTE_NAMES, toMono, waveformPeaks } from "@/lib/audio-analysis";
 
@@ -48,7 +48,7 @@ function Analyze() {
   async function handle(file: File) {
     setErr(""); setBusy(true); setRes(null);
     setLimit(false);
-    const left = await useOne().catch(() => 0);
+    const left = await takeFreeUse().catch(() => 0);
     if (left === null) { setBusy(false); setLimit(true); return; }
     try {
       const ctx = new AudioContext();

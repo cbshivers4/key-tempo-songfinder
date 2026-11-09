@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AudioWaveform, Mic, Pause, Play, Square, Upload, Circle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { UpgradeNotice } from "@/components/UpgradeNotice";
-import { useOne } from "@/lib/usage";
+import { takeFreeUse } from "@/lib/usage";
 import {
   BAND_STEPS, DEFAULT_SETTINGS, VocoderEngine, bandCenters, bandLevels,
   rms, spectralCentroid, zeroCrossingRate,
@@ -207,7 +207,7 @@ function Vocoder() {
       return;
     }
     if (!usedRef.current) {
-      const left = await useOne().catch(() => 0);
+      const left = await takeFreeUse().catch(() => 0);
       if (left === null) { setLimit(true); return; }
       usedRef.current = true;
     }

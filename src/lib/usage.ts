@@ -13,7 +13,7 @@ export function nextLocalCount(stored: { day: string; uses: number } | null, tod
 }
 
 /** Uses one free use (all tools combined). Returns remaining (-1 unlimited) or null when out. */
-export async function useOne(): Promise<number | null> {
+export async function takeFreeUse(): Promise<number | null> {
   const { data } = await supabase.auth.getSession();
   if (data.session) return (await consumeUse({ data: { environment: getPaddleEnvironment() } })).remaining;
   const today = new Date().toISOString().slice(0, 10);
