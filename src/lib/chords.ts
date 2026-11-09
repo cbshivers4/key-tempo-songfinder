@@ -97,7 +97,7 @@ export function detectSections(frames: number[][], energy: number[], secPerFrame
   for (let s = 0; s < frames.length; s += per) {
     const f = new Array(13).fill(0);
     const e = Math.min(frames.length, s + per);
-    for (let i = s; i < e; i++) { for (let k = 0; k < 12; k++) f[k] += frames[i][k]; f[12] += (energy[i] / peak) * 6; }
+    for (let i = s; i < e; i++) { for (let k = 0; k < 12; k++) f[k] += frames[i][k]; f[12] += energy[i] / peak; }
     blocks.push(f.map((v) => v / (e - s)));
   }
   if (blocks.length < 3) return [{ start: 0, end: frames.length * secPerFrame, label: "A" }];
