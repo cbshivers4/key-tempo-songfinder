@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Mic, Upload, Library, Home } from "lucide-react";
+import { Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
 import logo from "@/assets/song-analyzer-logo.png";
 
 const nav = [
   { to: "/", label: "Dashboard", icon: Home },
   { to: "/identify", label: "Song Finder", icon: Mic },
   { to: "/analyze", label: "Analyze", icon: Upload },
+  { to: "/vocoder", label: "Vocoder", icon: AudioWaveform },
   { to: "/library", label: "Library", icon: Library },
 ] as const;
 
@@ -30,7 +31,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         <p className="mt-auto text-[10px] tracking-[0.25em] text-muted-foreground">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
       </aside>
       <main className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">{children}</main>
-      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-4 border-t bg-card/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t bg-card/95 backdrop-blur md:hidden">
         {nav.map((n) => (
           <Link key={n.to} to={n.to} activeOptions={{ exact: true }}
             className="flex flex-col items-center gap-1 py-3 text-[11px] text-muted-foreground"

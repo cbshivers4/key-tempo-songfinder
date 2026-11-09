@@ -24,7 +24,7 @@ function Index() {
         <img src={logo} alt="Song Analyzer logo" width={1024} height={1024} className="mx-auto w-56 mix-blend-screen md:w-72" />
         <p className="mt-2 text-xs tracking-[0.3em] text-primary">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
       </div>
-      <div className="mt-10 grid gap-5 md:grid-cols-2">
+      <div className="mt-10 grid gap-5 md:grid-cols-3">
         <Link to="/identify" className="panel group flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
           <span className="grid h-24 w-24 place-items-center rounded-full bg-primary text-primary-foreground shadow-neon">
             <Mic className="h-10 w-10" />
