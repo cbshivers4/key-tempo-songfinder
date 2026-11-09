@@ -22,7 +22,7 @@ describe("vocoder band bank", () => {
     const ratio = Math.pow(HIGH_HZ / LOW_HZ, 1 / 15);
     expect(c[1] ?? 0).toBeCloseTo(80 * ratio, 4);
     expect(c[2] ?? 0).toBeCloseTo(80 * ratio * ratio, 3);
-    for (let i = 1; i < c.length; i++) expect(c[i]).toBeGreaterThan(c[i - 1]);
+    for (let i = 1; i < c.length; i++) expect(c[i] ?? 0).toBeGreaterThan(c[i - 1] ?? 0);
   });
 
   it("puts band edges at geometric midpoints and covers every centre", () => {
