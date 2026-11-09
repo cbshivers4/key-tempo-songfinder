@@ -1,0 +1,12 @@
+# Song Analyzer roadmap
+- [x] Branding, logo, favicon
+- [x] Dashboard
+- [x] Live song identification (AudD) — needs AUDD_API_TOKEN
+- [x] Identification history / library (local)
+- [x] Upload, playback, key + BPM detection
+- [ ] Hum to search (needs melody-recognition provider)
+- [ ] Instrument detection, stem separation, audio-to-MIDI (needs external GPU model service)
+- [ ] Chords, song structure, timeline
+- [ ] Vocoder analyzer
+- [ ] Lyrics (authorized)
+- [ ] Accounts (Lovable Cloud), subscriptions (Stripe), admin dashboard
