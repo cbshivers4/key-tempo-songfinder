@@ -51,7 +51,8 @@ function readColor(token: string, fallback: RGB): RGB {
   if (!g) return fallback;
   g.fillStyle = raw;
   g.fillRect(0, 0, 1, 1);
-  const [r, gg, b] = g.getImageData(0, 0, 1, 1).data;
+  const px = g.getImageData(0, 0, 1, 1).data;
+  const r = px[0] ?? 0, gg = px[1] ?? 0, b = px[2] ?? 0;
   return r || gg || b ? [r, gg, b] : fallback;
 }
 
@@ -102,7 +103,8 @@ function Vocoder() {
 
     for (let i = 0; i < eng.centers.length; i++) {
       const el = barsRef.current[i];
-      if (el) el.style.height = `${Math.max(2, lv[i] * 100)}%`;
+      const v = lv[i] ?? 0;
+      if (el) el.style.height = `${Math.max(2, v * 100)}%`;
     }
 
     const grid = gridRef.current;
@@ -113,7 +115,7 @@ function Vocoder() {
       gg.clearRect(w - 1, 0, 1, h);
       const rowH = h / lv.length;
       for (let i = 0; i < lv.length; i++) {
-        const v = lv[i];
+        const v = lv[i] ?? 0;
         const r = Math.round(low[0] + (high[0] - low[0]) * v);
         const g = Math.round(low[1] + (high[1] - low[1]) * v);
         const b = Math.round(low[2] + (high[2] - low[2]) * v);
@@ -135,7 +137,7 @@ function Vocoder() {
       wg.beginPath();
       for (let i = 0; i < n; i++) {
         const x = (i / (n - 1)) * w;
-        const y = h / 2 + ((t[i] - 128) / 128) * (h / 2 - 2);
+        const y = h / 2 + (((t[i] ?? 128) - 128) / 128) * (h / 2 - 2);
         if (i) wg.lineTo(x, y); else wg.moveTo(x, y);
       }
       wg.stroke();
@@ -145,14 +147,15 @@ function Vocoder() {
       const td = new Uint8Array(eng.analyser.fftSize);
       eng.analyser.getByteTimeDomainData(td);
       const signal = new Float32Array(td.length);
-      for (let i = 0; i < td.length; i++) signal[i] = (td[i] - 128) / 128;
+      for (let i = 0; i < td.length; i++) signal[i] = ((td[i] ?? 128) - 128) / 128;
       const top = lv.indexOf(Math.max(...lv));
+      const topLevel = top >= 0 ? (lv[top] ?? 0) : 0;
       setStats({
         centroid: spectralCentroid(freq, eng.ctx.sampleRate),
         zcr: zeroCrossingRate(signal, eng.ctx.sampleRate),
         level: rms(signal),
         active: lv.filter((v) => v > 0.15).length,
-        top: top >= 0 && lv[top] > 0.02 ? eng.centers[top] : 0,
+        top: topLevel > 0.02 ? (eng.centers[top] ?? 0) : 0,
       });
     }
 

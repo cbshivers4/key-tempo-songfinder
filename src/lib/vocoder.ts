@@ -58,11 +58,16 @@ export function bandCenters(count = DEFAULT_SETTINGS.bands, low = LOW_HZ, high =
 export function bandEdges(centers: number[]): number[] {
   const n = centers.length;
   if (n === 0) return [0, 0];
-  if (n === 1) return [centers[0] / 2, centers[0] * 2];
+  const first = centers[0] ?? 0;
+  if (n === 1) return [first / 2, first * 2];
   const e = new Array<number>(n + 1);
-  e[0] = (centers[0] * centers[0]) / centers[1];
-  for (let i = 1; i < n; i++) e[i] = Math.sqrt(centers[i - 1] * centers[i]);
-  e[n] = (centers[n - 1] * centers[n - 1]) / centers[n - 2];
+  const c0 = centers[0] ?? 0;
+  const c1 = centers[1] ?? c0;
+  e[0] = (c0 * c0) / c1;
+  for (let i = 1; i < n; i++) e[i] = Math.sqrt((centers[i - 1] ?? 0) * (centers[i] ?? 0));
+  const last = centers[n - 1] ?? 0;
+  const prev = centers[n - 2] ?? last;
+  e[n] = (last * last) / prev;
   return e;
 }
 
@@ -80,7 +85,7 @@ export function bandLevels(spectrum: ArrayLike<number>, sampleRate: number, cent
     const lo = Math.max(0, Math.floor(edges[i] / binHz));
     const hi = Math.min(spectrum.length - 1, Math.ceil(edges[i + 1] / binHz));
     let acc = 0, count = 0;
-    for (let b = lo; b <= hi; b++) { const v = spectrum[b]; acc += v * v; count++; }
+    for (let b = lo; b <= hi; b++) { const v = spectrum[b] ?? 0; acc += v * v; count++; }
     out[i] = count ? Math.sqrt(acc / count) : 0;
   }
   const max = Math.max(...out);
@@ -92,7 +97,7 @@ export function spectralCentroid(spectrum: ArrayLike<number>, sampleRate: number
   if (spectrum.length < 2) return 0;
   const binHz = sampleRate / 2 / spectrum.length;
   let num = 0, den = 0;
-  for (let i = 0; i < spectrum.length; i++) { const v = spectrum[i]; num += v * i * binHz; den += v; }
+  for (let i = 0; i < spectrum.length; i++) { const v = spectrum[i] ?? 0; num += v * i * binHz; den += v; }
   return den > 0 ? num / den : 0;
 }
 
@@ -101,7 +106,7 @@ export function zeroCrossingRate(samples: ArrayLike<number>, sampleRate: number)
   const n = samples.length;
   if (n < 2) return 0;
   let z = 0;
-  for (let i = 1; i < n; i++) if ((samples[i] >= 0) !== (samples[i - 1] >= 0)) z++;
+  for (let i = 1; i < n; i++) if (((samples[i] ?? 0) >= 0) !== ((samples[i - 1] ?? 0) >= 0)) z++;
   return (z * sampleRate) / (n - 1);
 }
 
@@ -109,7 +114,7 @@ export function rms(samples: ArrayLike<number>): number {
   const n = samples.length;
   if (!n) return 0;
   let s = 0;
-  for (let i = 0; i < n; i++) s += samples[i] * samples[i];
+  for (let i = 0; i < n; i++) { const v = samples[i] ?? 0; s += v * v; }
   return Math.sqrt(s / n);
 }
 
