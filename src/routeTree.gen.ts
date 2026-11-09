@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AnalyzeRouteImport } from './routes/analyze'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as VocoderRouteImport } from './routes/vocoder'
@@ -23,6 +24,11 @@ const IndexRoute = IndexRouteImport.update({
 const AnalyzeRoute = AnalyzeRouteImport.update({
   id: '/analyze',
   path: '/analyze',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IdentifyRoute = IdentifyRouteImport.update({
@@ -44,6 +50,7 @@ const VocoderRoute = VocoderRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
@@ -51,6 +58,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
@@ -59,21 +67,30 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/analyze': typeof AnalyzeRoute
+  '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analyze' | '/identify' | '/library' | '/vocoder'
+  fullPaths: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyze' | '/identify' | '/library' | '/vocoder'
-  id: '__root__' | '/' | '/analyze' | '/identify' | '/library' | '/vocoder'
+  to: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
+  id:
+    | '__root__'
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/identify'
+    | '/library'
+    | '/vocoder'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyzeRoute: typeof AnalyzeRoute
+  AuthRoute: typeof AuthRoute
   IdentifyRoute: typeof IdentifyRoute
   LibraryRoute: typeof LibraryRoute
   VocoderRoute: typeof VocoderRoute
@@ -93,6 +110,13 @@ declare module '@tanstack/react-router' {
       path: '/analyze'
       fullPath: '/analyze'
       preLoaderRoute: typeof AnalyzeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/identify': {
@@ -122,6 +146,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyzeRoute: AnalyzeRoute,
+  AuthRoute: AuthRoute,
   IdentifyRoute: IdentifyRoute,
   LibraryRoute: LibraryRoute,
   VocoderRoute: VocoderRoute,

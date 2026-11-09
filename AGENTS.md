@@ -32,3 +32,4 @@ use the editor.
 ## Project rules
 
 - Browser-only audio code (Web Audio graphs, canvas drawing) lives in `src/lib`, is instantiated only inside a user gesture, and never runs at module import — SSR and prerender evaluate imports, so anything touching `AudioContext` or `document` at import time breaks the build or the first paint.
+- Library storage: signed-out users save to localStorage, signed-in users to the library_songs table (RLS per user); local songs move into the account on sign-in — keeps the app usable without an account.

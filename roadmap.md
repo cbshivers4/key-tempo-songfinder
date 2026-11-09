@@ -9,4 +9,5 @@
 - [x] Chords, song structure, timeline (major/minor triads, A/B sections)
 - [x] Vocoder analyzer (live band bank, mic or file, record output)
 - [ ] Lyrics (authorized)
-- [ ] Accounts (Lovable Cloud), subscriptions (Stripe), admin dashboard
+- [x] Accounts (email, Google, Lovable) + library saved to account
+- [ ] Subscriptions (needs pricing decisions), admin dashboard

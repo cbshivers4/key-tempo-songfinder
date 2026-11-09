@@ -69,7 +69,7 @@ function Identify() {
       const buf = new Uint8Array(await blob.arrayBuffer());
       let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
       const r = await recognizeSong({ data: { audioBase64: btoa(bin), mime: rec.mimeType } }).catch(() => ({ status: "error" as const, message: "Network error" }));
-      if (r.status === "match") { setSong(r.song); addToHistory(r.song); }
+      if (r.status === "match") { setSong(r.song); void addToHistory(r.song); }
       if (r.status === "error") setMsg(r.message);
       setPhase(r.status);
     };
