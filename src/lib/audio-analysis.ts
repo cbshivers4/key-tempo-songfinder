@@ -104,7 +104,14 @@ export function detectTempo(samples: Float32Array, sampleRate: number) {
     const lag = (60 / bpm) * fps;
     const l0 = Math.floor(lag), fr = lag - l0;
     let s = 0;
-    for (let i = 0; i + l0 + 1 < frames; i++) s += env[i] * (env[i + l0] * (1 - fr) + env[i + l0 + 1] * fr);
+    // comb over 4 beat multiples sharpens the peak around the true period
+    for (let m = 1; m <= 4; m++) {
+      const L = lag * m, a = Math.floor(L), r = L - a;
+      let acc = 0;
+      for (let i = 0; i + a + 1 < frames; i++) acc += env[i] * (env[i + a] * (1 - r) + env[i + a + 1] * r);
+      s += acc / Math.max(1, frames - a);
+    }
+    void l0; void fr;
     // mild prior toward 120 BPM to resolve octave errors
     const w = Math.exp(-0.5 * Math.log2(bpm / 120) ** 2 / 0.6);
     scores.push({ bpm, s: s * w });
