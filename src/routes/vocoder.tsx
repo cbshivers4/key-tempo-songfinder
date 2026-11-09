@@ -322,7 +322,7 @@ function Vocoder() {
         <canvas ref={waveRef} width={900} height={80} className="mt-4 h-20 w-full rounded-lg border bg-background/60" />
         <div className="mt-4 grid gap-3 sm:grid-cols-4">
           <Readout label="OPEN BANDS" value={`${stats.active} / ${settings.bands}`} />
-          <Readout label="LOUDDEST BAND" value={stats.top ? `${fmtHz(stats.top)} Hz` : "—"} />
+          <Readout label="LOUDEST BAND" value={stats.top ? `${fmtHz(stats.top)} Hz` : "—"} />
           <Readout label="BRIGHTNESS" value={stats.centroid ? `${fmtHz(stats.centroid)} Hz` : "—"} />
           <Readout label="ROUGHNESS" value={stats.zcr ? `${Math.round(stats.zcr)} /s` : "—"} />
         </div>

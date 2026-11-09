@@ -82,8 +82,8 @@ export function bandLevels(spectrum: ArrayLike<number>, sampleRate: number, cent
   const binHz = sampleRate / 2 / spectrum.length;
   const out = new Array<number>(n).fill(0);
   for (let i = 0; i < n; i++) {
-    const lo = Math.max(0, Math.floor(edges[i] / binHz));
-    const hi = Math.min(spectrum.length - 1, Math.ceil(edges[i + 1] / binHz));
+    const lo = Math.max(0, Math.floor((edges[i] ?? 0) / binHz));
+    const hi = Math.min(spectrum.length - 1, Math.ceil((edges[i + 1] ?? 0) / binHz));
     let acc = 0, count = 0;
     for (let b = lo; b <= hi; b++) { const v = spectrum[b] ?? 0; acc += v * v; count++; }
     out[i] = count ? Math.sqrt(acc / count) : 0;
@@ -119,7 +119,7 @@ export function rms(samples: ArrayLike<number>): number {
 }
 
 /** WaveShaper curve for |x|^sharpness — the rectifier + hardness stage. */
-export function envelopeCurve(sharpness: number, n = 1024): Float32Array {
+export function envelopeCurve(sharpness: number, n = 1024) {
   const c = new Float32Array(n);
   const p = Math.max(0.2, sharpness);
   for (let i = 0; i < n; i++) {
@@ -136,7 +136,7 @@ export function smoothingHz(responseMs: number): number {
 }
 
 /** Soft-clip curve so heavy carrier levels stay listenable. */
-export function softClipCurve(n = 2048): Float32Array {
+export function softClipCurve(n = 2048) {
   const c = new Float32Array(n);
   for (let i = 0; i < n; i++) {
     const x = (i / (n - 1)) * 2 - 1;

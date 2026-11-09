@@ -17,11 +17,11 @@ describe("vocoder band bank", () => {
   it("spaces 16 bands logarithmically from 80 Hz to 8 kHz", () => {
     const c = bandCenters(16, LOW_HZ, HIGH_HZ);
     expect(c).toHaveLength(16);
-    expect(c[0]).toBeCloseTo(80, 6);
-    expect(c[15]).toBeCloseTo(8000, 6);
+    expect(c[0] ?? 0).toBeCloseTo(80, 6);
+    expect(c[15] ?? 0).toBeCloseTo(8000, 6);
     const ratio = Math.pow(HIGH_HZ / LOW_HZ, 1 / 15);
-    expect(c[1]).toBeCloseTo(80 * ratio, 4);
-    expect(c[2]).toBeCloseTo(80 * ratio * ratio, 3);
+    expect(c[1] ?? 0).toBeCloseTo(80 * ratio, 4);
+    expect(c[2] ?? 0).toBeCloseTo(80 * ratio * ratio, 3);
     for (let i = 1; i < c.length; i++) expect(c[i]).toBeGreaterThan(c[i - 1]);
   });
 
@@ -29,12 +29,12 @@ describe("vocoder band bank", () => {
     const c = bandCenters(16);
     const e = bandEdges(c);
     expect(e).toHaveLength(17);
-    expect(e[0]).toBeLessThan(80);
-    expect(e[16]).toBeGreaterThan(8000);
-    for (let i = 1; i < e.length; i++) expect(e[i]).toBeGreaterThan(e[i - 1]);
+    expect(e[0] ?? 0).toBeLessThan(80);
+    expect(e[16] ?? 0).toBeGreaterThan(8000);
+    for (let i = 1; i < e.length; i++) expect(e[i] ?? 0).toBeGreaterThan(e[i - 1] ?? 0);
     for (let i = 0; i < c.length; i++) {
-      expect(c[i]).toBeGreaterThan(e[i]);
-      expect(c[i]).toBeLessThan(e[i + 1]);
+      expect(c[i] ?? 0).toBeGreaterThan(e[i] ?? 0);
+      expect(c[i] ?? 0).toBeLessThan(e[i + 1] ?? 0);
     }
   });
 
@@ -44,7 +44,7 @@ describe("vocoder band bank", () => {
     const lv = bandLevels(spectrum, SR, bandCenters(16));
     const top = lv.indexOf(Math.max(...lv));
     expect(top).toBe(8); // 16 bands 80 Hz..8 kHz: band 8 spans ~850-1090 Hz
-    expect(lv[top]).toBeCloseTo(1, 6);
+    expect(lv[top] ?? 0).toBeCloseTo(1, 6);
     expect(Math.max(...lv.filter((_, i) => i !== top))).toBeLessThan(0.01);
   });
 
@@ -66,8 +66,8 @@ describe("vocoder envelope + time domain", () => {
   it("rectifies and hardens with |x|^sharpness", () => {
     expect(Array.from(envelopeCurve(2, 5))).toEqual([1, 0.25, 0, 0.25, 1]);
     const c = envelopeCurve(1.8, 1024);
-    expect(c[0]).toBeCloseTo(1, 6);
-    expect(c[511]).toBeLessThan(0.01); // centre (x ~ 0) is closed
+    expect(c[0] ?? 0).toBeCloseTo(1, 6);
+    expect(c[511] ?? 0).toBeLessThan(0.01); // centre (x ~ 0) is closed
   });
 
   it("turns an envelope time constant into a filter cutoff", () => {
