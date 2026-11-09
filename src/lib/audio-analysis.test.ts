@@ -10,7 +10,7 @@ describe("audio analysis", () => {
   it("detects C major from a C major triad", () => {
     const sr = 22050;
     const s = new Float32Array(sr * 3);
-    for (const f of [261.63, 329.63, 392.0]) for (let i = 0; i < s.length; i++) s[i] += Math.sin((2 * Math.PI * f * i) / sr) / 3;
+    for (const f of [261.63, 329.63, 392.0]) for (let i = 0; i < s.length; i++) s[i]! += Math.sin((2 * Math.PI * f * i) / sr) / 3;
     const k = detectKey(computeChroma(s, sr));
     expect(k.key).toBe("C");
     expect(k.mode).toBe("major");

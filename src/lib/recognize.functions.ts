@@ -57,7 +57,7 @@ export const recognizeSong = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data }): Promise<RecognizeResult> => {
-    const token = process.env.AUDD_API_TOKEN;
+    const token = process.env["AUDD_API_TOKEN"];
     if (!token) return { status: "not_configured" };
     try {
       const bin = atob(data.audioBase64);
