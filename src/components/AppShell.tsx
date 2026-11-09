@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
+import { Crown, LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import logo from "@/assets/song-analyzer-logo.png";
 
 const nav = [
@@ -32,6 +33,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
         </nav>
         <div className="mt-auto mb-4">
+          <Link to="/pricing" className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-primary hover:bg-secondary" activeProps={{ className: "bg-secondary" }}><Crown className="h-4 w-4" /> Go Pro</Link>
           {user ? (
             <button onClick={() => supabase.auth.signOut()} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
               <LogOut className="h-4 w-4" /> <span className="truncate">Sign out · {user.email}</span>
@@ -42,8 +44,10 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
         <p className=" text-[10px] tracking-[0.25em] text-muted-foreground">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
       </aside>
+      <PaymentTestModeBanner />
       <main className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
-        <div className="mb-4 flex justify-end md:hidden">
+        <div className="mb-4 flex justify-end gap-4 md:hidden">
+          <Link to="/pricing" className="flex items-center gap-1 text-xs text-primary"><Crown className="h-4 w-4" /> Pro</Link>
           {user
             ? <button onClick={() => supabase.auth.signOut()} className="flex items-center gap-1 text-xs text-muted-foreground"><LogOut className="h-4 w-4" /> Sign out</button>
             : <Link to="/auth" className="flex items-center gap-1 text-xs text-primary"><LogIn className="h-4 w-4" /> Sign in</Link>}
