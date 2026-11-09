@@ -11,3 +11,5 @@
 - [ ] Lyrics (authorized)
 - [x] Accounts (email, Google, Lovable) + library saved to account
 - [ ] Subscriptions (needs pricing decisions), admin dashboard
+
+- [ ] Checkout for Pro ($9.95/mo, 7-day trial): plan created; checkout + daily free limits waiting on answers
