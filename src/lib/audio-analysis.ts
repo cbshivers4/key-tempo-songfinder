@@ -94,6 +94,10 @@ export function detectTempo(samples: Float32Array, sampleRate: number) {
     env[f] = Math.max(0, e - prev);
     prev = e;
   }
+  // smooth onset envelope so frame-quantized onsets still align at fractional lags
+  const sm = new Float32Array(frames);
+  for (let i = 0; i < frames; i++) sm[i] = 0.25 * (env[i - 1] ?? 0) + 0.5 * env[i] + 0.25 * (env[i + 1] ?? 0);
+  env.set(sm);
   const fps = sampleRate / hop;
   const scores: { bpm: number; s: number }[] = [];
   for (let bpm = 60; bpm <= 200; bpm += 0.5) {
