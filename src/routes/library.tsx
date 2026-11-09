@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Heart, Trash2, Search, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
-import { loadHistory, saveHistory, type HistoryEntry } from "@/lib/history";
+import { Link } from "@tanstack/react-router";
+import { loadHistory, removeFromHistory, setFavorite, type HistoryEntry } from "@/lib/history";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/library")({
   head: () => ({
@@ -22,13 +24,18 @@ function LibraryPage() {
   const [items, setItems] = useState<HistoryEntry[]>([]);
   const [q, setQ] = useState("");
   const [favOnly, setFavOnly] = useState(false);
-  useEffect(() => setItems(loadHistory()), []);
-  const update = (next: HistoryEntry[]) => { setItems(next); saveHistory(next); };
+  const { user, ready } = useAuth();
+  useEffect(() => { if (ready) loadHistory().then(setItems).catch(() => setItems([])); }, [ready, user?.id]);
+  const toggleFav = (s: HistoryEntry) => { setItems(items.map((i) => (i.id === s.id ? { ...i, favorite: !i.favorite } : i))); void setFavorite(s.id, !s.favorite); };
+  const remove = (s: HistoryEntry) => { setItems(items.filter((i) => i.id !== s.id)); void removeFromHistory(s.id); };
   const shown = items.filter((i) => (!favOnly || i.favorite) && `${i.title} ${i.artist}`.toLowerCase().includes(q.toLowerCase()));
 
   return (
     <AppShell>
       <h1 className="font-display text-2xl font-bold tracking-wider text-chrome">MY MUSIC LIBRARY</h1>
+      {ready && (user
+        ? <p className="mt-1 text-sm text-muted-foreground">Saved to your account ({user.email}).</p>
+        : <p className="mt-1 text-sm text-muted-foreground">Saved on this device only. <Link to="/auth" className="text-primary">Sign in</Link> to keep it everywhere.</p>)}
       <div className="mt-5 flex gap-2">
         <div className="flex flex-1 items-center gap-2 rounded-lg border bg-card px-3">
           <Search className="h-4 w-4 text-muted-foreground" />
@@ -49,10 +56,10 @@ function LibraryPage() {
                 <div className="text-[11px] text-muted-foreground">{new Date(s.identifiedAt).toLocaleString()}</div>
               </div>
               {s.links[0] && <a href={s.links[0].url} target="_blank" rel="noreferrer" aria-label="Open in streaming" className="p-2"><ExternalLink className="h-4 w-4" /></a>}
-              <button aria-label="Favorite" onClick={() => update(items.map((i) => (i.id === s.id ? { ...i, favorite: !i.favorite } : i)))} className="p-2">
+              <button aria-label="Favorite" onClick={() => toggleFav(s)} className="p-2">
                 <Heart className={`h-4 w-4 ${s.favorite ? "fill-primary text-primary" : ""}`} />
               </button>
-              <button aria-label="Remove" onClick={() => update(items.filter((i) => i.id !== s.id))} className="p-2 text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
+              <button aria-label="Remove" onClick={() => remove(s)} className="p-2 text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
             </li>
           ))}
         </ul>

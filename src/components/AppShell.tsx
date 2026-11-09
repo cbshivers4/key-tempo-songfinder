@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
+import { LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import logo from "@/assets/song-analyzer-logo.png";
 
 const nav = [
@@ -12,6 +14,7 @@ const nav = [
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const { user } = useAuth();
   return (
     <div className="min-h-screen pb-20 md:pb-0 md:pl-60">
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r bg-card/60 p-4 backdrop-blur md:flex">
@@ -28,9 +31,23 @@ export function AppShell({ children }: { children: ReactNode }) {
             </Link>
           ))}
         </nav>
-        <p className="mt-auto text-[10px] tracking-[0.25em] text-muted-foreground">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
+        <div className="mt-auto mb-4">
+          {user ? (
+            <button onClick={() => supabase.auth.signOut()} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
+              <LogOut className="h-4 w-4" /> <span className="truncate">Sign out · {user.email}</span>
+            </button>
+          ) : (
+            <Link to="/auth" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"><LogIn className="h-4 w-4" /> Sign in</Link>
+          )}
+        </div>
+        <p className=" text-[10px] tracking-[0.25em] text-muted-foreground">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
       </aside>
-      <main className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">{children}</main>
+      <main className="mx-auto max-w-5xl px-4 py-6 md:px-8 md:py-10">
+        <div className="mb-4 flex justify-end md:hidden">
+          {user
+            ? <button onClick={() => supabase.auth.signOut()} className="flex items-center gap-1 text-xs text-muted-foreground"><LogOut className="h-4 w-4" /> Sign out</button>
+            : <Link to="/auth" className="flex items-center gap-1 text-xs text-primary"><LogIn className="h-4 w-4" /> Sign in</Link>}
+        </div>{children}</main>
       <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t bg-card/95 backdrop-blur md:hidden">
         {nav.map((n) => (
           <Link key={n.to} to={n.to} activeOptions={{ exact: true }}
