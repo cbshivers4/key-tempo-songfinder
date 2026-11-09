@@ -5,7 +5,7 @@ import { verifyWebhook, EventName, type PaddleEnv } from '@/lib/paddle.server';
 // Public by design: every request is authenticated by its Paddle signature.
 let _supabase: ReturnType<typeof createClient> | null = null;
 function getSupabase() {
-  if (!_supabase) _supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+  if (!_supabase) _supabase = createClient(process.env['SUPABASE_URL']!, process.env['SUPABASE_SERVICE_ROLE_KEY']!);
   return _supabase;
 }
 
