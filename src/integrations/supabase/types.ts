@@ -14,7 +14,30 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      library_songs: {
+        Row: {
+          favorite: boolean
+          id: string
+          identified_at: string
+          song: Json
+          user_id: string
+        }
+        Insert: {
+          favorite?: boolean
+          id?: string
+          identified_at?: string
+          song: Json
+          user_id?: string
+        }
+        Update: {
+          favorite?: boolean
+          id?: string
+          identified_at?: string
+          song?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
