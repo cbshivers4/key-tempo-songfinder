@@ -15,6 +15,9 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as PricingRouteImport } from './routes/pricing'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VocoderRouteImport } from './routes/vocoder'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -49,6 +52,21 @@ const PricingRoute = PricingRouteImport.update({
   path: '/pricing',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundsRoute = RefundsRouteImport.update({
+  id: '/refunds',
+  path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VocoderRoute = VocoderRouteImport.update({
   id: '/vocoder',
   path: '/vocoder',
@@ -73,6 +91,9 @@ export interface FileRoutesByFullPath {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -84,6 +105,9 @@ export interface FileRoutesByTo {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -96,6 +120,9 @@ export interface FileRoutesById {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/pricing': typeof PricingRoute
+  '/privacy': typeof PrivacyRoute
+  '/refunds': typeof RefundsRoute
+  '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -109,6 +136,9 @@ export interface FileRouteTypes {
     | '/identify'
     | '/library'
     | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
     | '/vocoder'
     | '/checkout/success'
     | '/api/public/payments/webhook'
@@ -120,6 +150,9 @@ export interface FileRouteTypes {
     | '/identify'
     | '/library'
     | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
     | '/vocoder'
     | '/checkout/success'
     | '/api/public/payments/webhook'
@@ -131,6 +164,9 @@ export interface FileRouteTypes {
     | '/identify'
     | '/library'
     | '/pricing'
+    | '/privacy'
+    | '/refunds'
+    | '/terms'
     | '/vocoder'
     | '/checkout/success'
     | '/api/public/payments/webhook'
@@ -143,6 +179,9 @@ export interface RootRouteChildren {
   IdentifyRoute: typeof IdentifyRoute
   LibraryRoute: typeof LibraryRoute
   PricingRoute: typeof PricingRoute
+  PrivacyRoute: typeof PrivacyRoute
+  RefundsRoute: typeof RefundsRoute
+  TermsRoute: typeof TermsRoute
   VocoderRoute: typeof VocoderRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -192,6 +231,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PricingRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refunds': {
+      id: '/refunds'
+      path: '/refunds'
+      fullPath: '/refunds'
+      preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vocoder': {
       id: '/vocoder'
       path: '/vocoder'
@@ -223,6 +283,9 @@ const rootRouteChildren: RootRouteChildren = {
   IdentifyRoute: IdentifyRoute,
   LibraryRoute: LibraryRoute,
   PricingRoute: PricingRoute,
+  PrivacyRoute: PrivacyRoute,
+  RefundsRoute: RefundsRoute,
+  TermsRoute: TermsRoute,
   VocoderRoute: VocoderRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,

@@ -13,4 +13,4 @@
 - [ ] Subscriptions (needs pricing decisions), admin dashboard
 
 - [x] Checkout for Pro ($9.95/mo, 7-day trial, card up front), 3 free uses/day combined, access until period end on cancel
-- [ ] Policy pages (terms, refunds, privacy) — needs legal business name before going live
+- [x] Policy pages (terms, refunds, privacy)

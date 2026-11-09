@@ -51,7 +51,13 @@ export function AppShell({ children }: { children: ReactNode }) {
           {user
             ? <button onClick={() => supabase.auth.signOut()} className="flex items-center gap-1 text-xs text-muted-foreground"><LogOut className="h-4 w-4" /> Sign out</button>
             : <Link to="/auth" className="flex items-center gap-1 text-xs text-primary"><LogIn className="h-4 w-4" /> Sign in</Link>}
-        </div>{children}</main>
+        </div>{children}
+        <footer className="mt-12 mb-20 flex flex-wrap justify-center gap-4 border-t pt-4 text-xs text-muted-foreground md:mb-0">
+          <Link to="/terms" className="hover:text-primary">Terms</Link>
+          <Link to="/refunds" className="hover:text-primary">Refund Policy</Link>
+          <Link to="/privacy" className="hover:text-primary">Privacy</Link>
+          <a href="mailto:cbshivers@gmail.com" className="hover:text-primary">Contact</a>
+        </footer></main>
       <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t bg-card/95 backdrop-blur md:hidden">
         {nav.map((n) => (
           <Link key={n.to} to={n.to} activeOptions={{ exact: true }}
