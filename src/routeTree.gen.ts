@@ -14,7 +14,10 @@ import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as VocoderRouteImport } from './routes/vocoder'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,11 +44,27 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VocoderRoute = VocoderRouteImport.update({
   id: '/vocoder',
   path: '/vocoder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -53,7 +72,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/pricing': typeof PricingRoute
   '/vocoder': typeof VocoderRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,7 +83,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/pricing': typeof PricingRoute
   '/vocoder': typeof VocoderRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -70,13 +95,34 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/pricing': typeof PricingRoute
   '/vocoder': typeof VocoderRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
+  fullPaths:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/identify'
+    | '/library'
+    | '/pricing'
+    | '/vocoder'
+    | '/checkout/success'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
+  to:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/identify'
+    | '/library'
+    | '/pricing'
+    | '/vocoder'
+    | '/checkout/success'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -84,7 +130,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/identify'
     | '/library'
+    | '/pricing'
     | '/vocoder'
+    | '/checkout/success'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -93,7 +142,10 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   IdentifyRoute: typeof IdentifyRoute
   LibraryRoute: typeof LibraryRoute
+  PricingRoute: typeof PricingRoute
   VocoderRoute: typeof VocoderRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -133,11 +185,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vocoder': {
       id: '/vocoder'
       path: '/vocoder'
       fullPath: '/vocoder'
       preLoaderRoute: typeof VocoderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -149,7 +222,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   IdentifyRoute: IdentifyRoute,
   LibraryRoute: LibraryRoute,
+  PricingRoute: PricingRoute,
   VocoderRoute: VocoderRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

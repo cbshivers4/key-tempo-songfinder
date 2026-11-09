@@ -33,3 +33,4 @@ use the editor.
 
 - Browser-only audio code (Web Audio graphs, canvas drawing) lives in `src/lib`, is instantiated only inside a user gesture, and never runs at module import — SSR and prerender evaluate imports, so anything touching `AudioContext` or `document` at import time breaks the build or the first paint.
 - Library storage: signed-out users save to localStorage, signed-in users to the library_songs table (RLS per user); local songs move into the account on sign-in — keeps the app usable without an account.
+- Free-use limits are enforced by the consume_use database function (server-side for Song Finder via the recognize server fn); Analyze/Vocoder run in the browser so their gate is client-side, and signed-out counts live in localStorage — a DB function keeps the count atomic.

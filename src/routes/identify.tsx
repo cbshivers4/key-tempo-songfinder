@@ -4,6 +4,9 @@ import { Mic, Square, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { recognizeSong, type RecognizedSong } from "@/lib/recognize.functions";
 import { addToHistory } from "@/lib/history";
+import { getPaddleEnvironment } from "@/lib/paddle";
+import { useAuth } from "@/hooks/useAuth";
+import { UpgradeNotice } from "@/components/UpgradeNotice";
 
 export const Route = createFileRoute("/identify")({
   head: () => ({
@@ -19,7 +22,7 @@ export const Route = createFileRoute("/identify")({
   component: Identify,
 });
 
-type Phase = "idle" | "listening" | "searching" | "match" | "no_match" | "not_configured" | "error";
+type Phase = "idle" | "listening" | "searching" | "match" | "no_match" | "not_configured" | "limit" | "error";
 const SECONDS = 10;
 
 function Identify() {
@@ -30,6 +33,7 @@ function Identify() {
   const canvas = useRef<HTMLCanvasElement>(null);
   const stopRef = useRef<() => void>(() => {});
   const cancelled = useRef(false);
+  const { user, ready } = useAuth();
 
   useEffect(() => () => stopRef.current(), []);
 
@@ -68,7 +72,7 @@ function Identify() {
       const blob = new Blob(chunks, { type: rec.mimeType });
       const buf = new Uint8Array(await blob.arrayBuffer());
       let bin = ""; for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode(...buf.subarray(i, i + 0x8000));
-      const r = await recognizeSong({ data: { audioBase64: btoa(bin), mime: rec.mimeType } }).catch(() => ({ status: "error" as const, message: "Network error" }));
+      const r = await recognizeSong({ data: { audioBase64: btoa(bin), mime: rec.mimeType, environment: getPaddleEnvironment() } }).catch(() => ({ status: "error" as const, message: "Network error" }));
       if (r.status === "match") { setSong(r.song); void addToHistory(r.song); }
       if (r.status === "error") setMsg(r.message);
       setPhase(r.status);
@@ -80,7 +84,7 @@ function Identify() {
   const label: Record<Phase, string> = {
     idle: "Tap to identify", listening: `Listening… ${Math.max(left, 0)}s`, searching: "Searching music database…",
     match: "Song identified!", no_match: "No match found. Try again closer to the speaker.",
-    not_configured: "Song recognition needs a provider key before it can run.", error: msg || "Something went wrong. Try again.",
+    not_configured: "Song recognition needs a provider key before it can run.", limit: "You've used today's 3 free uses.", error: msg || "Something went wrong. Try again.",
   };
   const busy = phase === "listening" || phase === "searching";
 
@@ -91,14 +95,16 @@ function Identify() {
       <div className="mt-10 flex flex-col items-center">
         <div className="relative">
           {phase === "listening" && <span className="absolute inset-0 rounded-full bg-primary animate-pulse-ring" />}
-          <button onClick={busy ? () => stopRef.current() : start} disabled={phase === "searching"}
+          <button onClick={busy ? () => stopRef.current() : start} disabled={phase === "searching" || (ready && !user)}
             aria-label={busy ? "Stop listening" : "Start listening"}
             className="relative grid h-40 w-40 place-items-center rounded-full bg-primary text-primary-foreground shadow-neon transition active:scale-95 disabled:opacity-70">
             {busy ? <Square className="h-12 w-12" /> : <Mic className="h-16 w-16" />}
           </button>
         </div>
         <canvas ref={canvas} width={600} height={100} className={`mt-6 h-20 w-full max-w-md text-primary ${phase === "listening" ? "" : "opacity-20"}`} />
-        <p className="mt-2 text-center font-display text-sm tracking-wider">{label[phase]}</p>
+        <p className="mt-2 text-center font-display text-sm tracking-wider">{ready && !user ? "Sign in to identify songs — 3 free a day" : label[phase]}</p>
+        {ready && !user && <Link to="/auth" className="mt-3 rounded-full bg-primary px-5 py-2 font-display text-xs tracking-wider text-primary-foreground">SIGN IN FREE</Link>}
+        {phase === "limit" && <UpgradeNotice />}
       </div>
 
       {song && (

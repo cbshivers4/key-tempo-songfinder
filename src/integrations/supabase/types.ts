@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      daily_usage: {
+        Row: {
+          day: string
+          user_id: string
+          uses: number
+        }
+        Insert: {
+          day?: string
+          user_id: string
+          uses?: number
+        }
+        Update: {
+          day?: string
+          user_id?: string
+          uses?: number
+        }
+        Relationships: []
+      }
       library_songs: {
         Row: {
           favorite: boolean
@@ -38,12 +56,67 @@ export type Database = {
         }
         Relationships: []
       }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          environment: string
+          id: string
+          paddle_customer_id: string
+          paddle_subscription_id: string
+          price_id: string
+          product_id: string
+          status: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment?: string
+          id?: string
+          paddle_customer_id: string
+          paddle_subscription_id: string
+          price_id: string
+          product_id: string
+          status?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          environment?: string
+          id?: string
+          paddle_customer_id?: string
+          paddle_subscription_id?: string
+          price_id?: string
+          product_id?: string
+          status?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      consume_use: {
+        Args: { check_env: string; free_limit?: number }
+        Returns: number
+      }
+      has_active_subscription: {
+        Args: { check_env?: string; user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

@@ -8,6 +8,20 @@
       "when": 1794246345856,
       "tag": "0000_library_songs",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794247333199,
+      "tag": "0001_subscriptions_and_usage",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794247389112,
+      "tag": "0002_subscriptions_realtime",
+      "breakpoints": true
     }
   ]
 }

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export type RecognizedSong = {
   title: string;
@@ -16,6 +17,7 @@ export type RecognizeResult =
   | { status: "match"; song: RecognizedSong }
   | { status: "no_match" }
   | { status: "not_configured" }
+  | { status: "limit" }
   | { status: "error"; message: string };
 
 // Provider layer: add more providers (ACRCloud, etc.) here and pick by available secret.
@@ -51,14 +53,19 @@ async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeR
   };
 }
 
+// Signed-in only: each identification uses one free daily use unless subscribed (enforced in the database).
 export const recognizeSong = createServerFn({ method: "POST" })
-  .inputValidator((d: { audioBase64: string; mime: string }) => {
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { audioBase64: string; mime: string; environment: "sandbox" | "live" }) => {
     if (typeof d?.audioBase64 !== "string" || d.audioBase64.length > 8_000_000) throw new Error("Invalid audio");
     return d;
   })
-  .handler(async ({ data }): Promise<RecognizeResult> => {
+  .handler(async ({ data, context }): Promise<RecognizeResult> => {
     const token = process.env["AUDD_API_TOKEN"];
     if (!token) return { status: "not_configured" };
+    const { data: remaining, error } = await context.supabase.rpc("consume_use", { check_env: data.environment === "sandbox" ? "sandbox" : "live", free_limit: 3 });
+    if (error) return { status: "error", message: "Couldn't check your plan" };
+    if (remaining === null) return { status: "limit" };
     try {
       const bin = atob(data.audioBase64);
       const bytes = new Uint8Array(bin.length);
