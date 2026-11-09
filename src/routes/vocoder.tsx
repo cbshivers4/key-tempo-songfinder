@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AudioWaveform, Mic, Pause, Play, Square, Upload, Circle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { UpgradeNotice } from "@/components/UpgradeNotice";
+import { useOne } from "@/lib/usage";
 import {
   BAND_STEPS, DEFAULT_SETTINGS, VocoderEngine, bandCenters, bandLevels,
   rms, spectralCentroid, zeroCrossingRate,
@@ -65,6 +67,8 @@ function Vocoder() {
   const [fileName, setFileName] = useState("");
   const [url, setUrl] = useState("");
   const [err, setErr] = useState("");
+  const [limit, setLimit] = useState(false);
+  const usedRef = useRef(false);
   const [stats, setStats] = useState({ centroid: 0, zcr: 0, level: 0, active: 0, top: 0 });
 
   const centers = useMemo(() => bandCenters(settings.bands), [settings.bands]);
@@ -202,6 +206,11 @@ function Vocoder() {
       setPlaying(false);
       return;
     }
+    if (!usedRef.current) {
+      const left = await useOne().catch(() => 0);
+      if (left === null) { setLimit(true); return; }
+      usedRef.current = true;
+    }
     try {
       const eng = await ensureEngine();
       await wireModulator(eng);
@@ -302,6 +311,7 @@ function Vocoder() {
         <audio ref={audioRef} src={url || undefined} loop className="hidden"
           onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
         {err && <p className="mt-3 text-sm text-destructive">{err}</p>}
+        {limit && <UpgradeNotice />}
         {!running && <p className="mt-3 text-xs text-muted-foreground">Press play to route the source through the band bank.</p>}
       </div>
 

@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Upload, Play, Pause, Square, Repeat } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { UpgradeNotice } from "@/components/UpgradeNotice";
+import { useOne } from "@/lib/usage";
 import { chordSummary, detectChords, detectSections, frameChroma, type ChordSeg, type Section } from "@/lib/chords";
 import { computeChroma, detectKey, detectTempo, loudness, NOTE_NAMES, toMono, waveformPeaks } from "@/lib/audio-analysis";
 
@@ -32,6 +34,7 @@ function Analyze() {
   const [res, setRes] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const [limit, setLimit] = useState(false);
   const [url, setUrl] = useState("");
   const [drag, setDrag] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
@@ -44,6 +47,9 @@ function Analyze() {
 
   async function handle(file: File) {
     setErr(""); setBusy(true); setRes(null);
+    setLimit(false);
+    const left = await useOne().catch(() => 0);
+    if (left === null) { setBusy(false); setLimit(true); return; }
     try {
       const ctx = new AudioContext();
       const buf = await ctx.decodeAudioData(await file.arrayBuffer());
@@ -86,6 +92,7 @@ function Analyze() {
         <input type="file" accept="audio/*,.flac,.aiff,.aif" className="hidden" onChange={(e) => e.target.files?.[0] && handle(e.target.files[0])} />
       </label>
       {err && <p className="mt-3 text-sm text-destructive">{err}</p>}
+        {limit && <UpgradeNotice />}
 
       {res && (
         <div className="mt-8 space-y-6">
