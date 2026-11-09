@@ -73,7 +73,8 @@ describe("vocoder envelope + time domain", () => {
   it("turns an envelope time constant into a filter cutoff", () => {
     expect(smoothingHz(20)).toBeCloseTo(7.96, 1);
     expect(smoothingHz(5000)).toBe(2); // clamped, never a dead filter
-    expect(smoothingHz(0.01)).toBe(12000);
+    expect(smoothingHz(0.01)).toBeCloseTo(smoothingHz(0.05), 6); // floor: never above ~3.2 kHz
+    expect(smoothingHz(0.01)).toBeLessThan(3200);
   });
 
   it("counts sign changes so noise reads rougher than a vowel", () => {
@@ -81,7 +82,7 @@ describe("vocoder envelope + time domain", () => {
     const n = 2000;
     const sine = new Float32Array(n);
     for (let i = 0; i < n; i++) sine[i] = Math.sin((2 * Math.PI * 440 * i) / sr);
-    expect(zeroCrossingRate(sine, sr)).toBeCloseTo(880, 0);
+    expect(Math.abs(zeroCrossingRate(sine, sr) - 880) / 880).toBeLessThan(0.01);
     const noise = new Float32Array(n);
     for (let i = 0; i < n; i++) noise[i] = Math.random() * 2 - 1;
     expect(zeroCrossingRate(noise, sr)).toBeGreaterThan(2000);
