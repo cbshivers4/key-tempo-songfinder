@@ -21,7 +21,7 @@ function Index() {
   return (
     <AppShell>
       <div className="text-center">
-        <img src={logo} alt="Song Analyzer logo" width={1024} height={1024} className="mx-auto w-56 md:w-72" />
+        <img src={logo} alt="Song Analyzer logo" width={1024} height={1024} className="mx-auto w-56 mix-blend-screen md:w-72" />
         <p className="mt-2 text-xs tracking-[0.3em] text-primary">DISCOVER • IDENTIFY • ANALYZE • RECREATE</p>
       </div>
       <div className="mt-10 grid gap-5 md:grid-cols-2">

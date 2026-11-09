@@ -15,7 +15,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="min-h-screen pb-20 md:pb-0 md:pl-60">
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r bg-card/60 p-4 backdrop-blur md:flex">
         <Link to="/" className="mb-8 flex items-center gap-2">
-          <img src={logo} alt="Song Analyzer" width={44} height={44} className="h-11 w-11 object-cover" />
+          <img src={logo} alt="Song Analyzer" width={44} height={44} className="h-11 w-11 object-cover mix-blend-screen" />
           <span className="font-display text-sm font-bold tracking-widest text-chrome">SONG ANALYZER</span>
         </Link>
         <nav className="space-y-1">
