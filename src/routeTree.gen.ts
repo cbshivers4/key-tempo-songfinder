@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LibraryRouteImport } from './routes/library'
 import { Route as VocoderRouteImport } from './routes/vocoder'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,6 +47,12 @@ const VocoderRoute = VocoderRouteImport.update({
   path: '/vocoder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByFullPath {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -62,6 +70,7 @@ export interface FileRoutesByTo {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -71,12 +80,27 @@ export interface FileRoutesById {
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
   '/vocoder': typeof VocoderRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
+  fullPaths:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/identify'
+    | '/library'
+    | '/vocoder'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analyze' | '/auth' | '/identify' | '/library' | '/vocoder'
+  to:
+    | '/'
+    | '/analyze'
+    | '/auth'
+    | '/identify'
+    | '/library'
+    | '/vocoder'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -85,6 +109,7 @@ export interface FileRouteTypes {
     | '/identify'
     | '/library'
     | '/vocoder'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -94,6 +119,7 @@ export interface RootRouteChildren {
   IdentifyRoute: typeof IdentifyRoute
   LibraryRoute: typeof LibraryRoute
   VocoderRoute: typeof VocoderRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -140,6 +166,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VocoderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -150,6 +183,7 @@ const rootRouteChildren: RootRouteChildren = {
   IdentifyRoute: IdentifyRoute,
   LibraryRoute: LibraryRoute,
   VocoderRoute: VocoderRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
