@@ -28,3 +28,7 @@ use the editor.
   own key and store it in Secrets.
 - **Secrets.** Lovable manages them. Do not put secret values in the repo.
 <!-- LOVABLE:END -->
+
+## Project rules
+
+- Browser-only audio code (Web Audio graphs, canvas drawing) lives in `src/lib`, is instantiated only inside a user gesture, and never runs at module import — SSR and prerender evaluate imports, so anything touching `AudioContext` or `document` at import time breaks the build or the first paint.

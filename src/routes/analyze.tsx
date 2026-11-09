@@ -129,7 +129,7 @@ function Analyze() {
               ))}
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">Instruments, stems, chords, notes/MIDI and vocoder analysis are coming in the next build stages.</p>
+          <p className="text-xs text-muted-foreground">Instruments, stems, chords, notes/MIDI and lyrics are coming in the next build stages. The vocoder lives in its own tab.</p>
         </div>
       )}
     </AppShell>
