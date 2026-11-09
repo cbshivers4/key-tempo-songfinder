@@ -6,7 +6,7 @@
 - [x] Upload, playback, key + BPM detection
 - [ ] Hum to search (needs melody-recognition provider)
 - [ ] Instrument detection, stem separation, audio-to-MIDI (needs external GPU model service)
-- [ ] Chords, song structure, timeline
+- [x] Chords, song structure, timeline (major/minor triads, A/B sections)
 - [x] Vocoder analyzer (live band bank, mic or file, record output)
 - [ ] Lyrics (authorized)
 - [ ] Accounts (Lovable Cloud), subscriptions (Stripe), admin dashboard

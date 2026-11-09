@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Upload, Play, Pause, Square, Repeat } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
+import { chordSummary, detectChords, detectSections, frameChroma, type ChordSeg, type Section } from "@/lib/chords";
 import { computeChroma, detectKey, detectTempo, loudness, NOTE_NAMES, toMono, waveformPeaks } from "@/lib/audio-analysis";
 
 export const Route = createFileRoute("/analyze")({
@@ -22,6 +23,7 @@ type Result = {
   name: string; format: string; duration: number; sampleRate: number; channels: number;
   peaks: number[]; chroma: number[]; key: ReturnType<typeof detectKey>; tempo: ReturnType<typeof detectTempo>;
   loud: ReturnType<typeof loudness>;
+  chords: ChordSeg[]; sections: Section[]; offset: number;
 };
 
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
@@ -52,10 +54,16 @@ function Analyze() {
       const max = buf.sampleRate * 180;
       const seg = mono.length > max ? mono.subarray((mono.length - max) / 2, (mono.length + max) / 2) : mono;
       const chroma = computeChroma(seg, buf.sampleRate);
+      // chord/section timeline over the first 6 minutes
+      const tl = mono.subarray(0, Math.min(mono.length, buf.sampleRate * 360));
+      const fc = frameChroma(tl, buf.sampleRate);
+      const chords = detectChords(fc.frames, fc.energy, fc.secPerFrame);
+      const sections = detectSections(fc.frames, fc.energy, fc.secPerFrame);
       setRes({
         name: file.name, format: file.name.split(".").pop()?.toUpperCase() ?? file.type,
         duration: buf.duration, sampleRate: buf.sampleRate, channels: buf.numberOfChannels,
         peaks: waveformPeaks(mono, 400), chroma, key: detectKey(chroma), tempo: detectTempo(seg, buf.sampleRate), loud: loudness(mono),
+        chords, sections, offset: 0,
       });
       setUrl(URL.createObjectURL(file));
     } catch {
@@ -129,7 +137,9 @@ function Analyze() {
               ))}
             </div>
           </div>
-          <p className="text-xs text-muted-foreground">Instruments, stems, chords, notes/MIDI and lyrics are coming in the next build stages. The vocoder lives in its own tab.</p>
+          <Timeline res={res} t={t} seek={(x) => { if (a) a.currentTime = x; }} />
+
+          <p className="text-xs text-muted-foreground">Instruments, stems, notes/MIDI and lyrics are coming in the next build stages. The vocoder lives in its own tab.</p>
         </div>
       )}
     </AppShell>
@@ -148,6 +158,45 @@ function Stat({ label, value, sub, conf }: { label: string; value: string; sub?:
         </div>
       )}
       {sub && <div className="mt-1 text-[11px] text-muted-foreground">{sub}</div>}
+    </div>
+  );
+}
+
+const SECTION_COLORS = ["bg-primary/30", "bg-accent/40", "bg-secondary", "bg-muted", "bg-primary/15", "bg-accent/20"];
+
+function Timeline({ res, t, seek }: { res: Result; t: number; seek: (s: number) => void }) {
+  const total = Math.max(res.chords.at(-1)?.end ?? 0, res.sections.at(-1)?.end ?? 0) || res.duration;
+  const now = res.chords.find((c) => t >= c.start && t < c.end);
+  const next = res.chords.find((c) => c.start > t && c.chord !== "N");
+  const sec = res.sections.find((x) => t >= x.start && t < x.end);
+  const common = chordSummary(res.chords);
+  const pct = (x: number) => `${(x / total) * 100}%`;
+  return (
+    <div className="panel p-5">
+      <h3 className="font-display text-sm tracking-wider text-primary">CHORDS & SONG SECTIONS</h3>
+      <p className="text-xs text-muted-foreground">Estimated from the notes heard over time. Press play to follow along, or tap a block to jump there.</p>
+      <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        <div><div className="text-[11px] tracking-widest text-muted-foreground">NOW</div><div className="text-3xl font-bold text-chrome">{now && now.chord !== "N" ? now.chord : "—"}</div></div>
+        <div><div className="text-[11px] tracking-widest text-muted-foreground">NEXT</div><div className="text-3xl font-bold text-muted-foreground">{next?.chord ?? "—"}</div></div>
+        <div><div className="text-[11px] tracking-widest text-muted-foreground">SECTION</div><div className="text-3xl font-bold text-chrome">{sec ? `Part ${sec.label}` : "—"}</div></div>
+      </div>
+      <div className="mt-4 overflow-x-auto">
+        <div className="relative min-w-[640px]" style={{ width: `${Math.max(100, total * 4)}%` }}>
+          <div className="relative h-8">
+            {res.sections.map((s, i) => (
+              <button key={i} onClick={() => seek(s.start)} className={`absolute top-0 h-full rounded border border-border text-xs font-bold ${SECTION_COLORS[(s.label.charCodeAt(0) - 65) % SECTION_COLORS.length]}`} style={{ left: pct(s.start), width: pct(s.end - s.start) }}>{s.label}</button>
+            ))}
+          </div>
+          <div className="relative mt-1 h-10">
+            {res.chords.map((c, i) => (
+              <button key={i} onClick={() => seek(c.start)} title={`${c.chord} at ${fmt(c.start)}`} className={`absolute top-0 h-full truncate rounded border px-1 text-[11px] ${c === now ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card"}`} style={{ left: pct(c.start), width: pct(c.end - c.start) }}>{c.chord === "N" ? "" : c.chord}</button>
+            ))}
+          </div>
+          <div className="pointer-events-none absolute inset-y-0 w-0.5 bg-primary shadow-neon" style={{ left: pct(Math.min(t, total)) }} />
+        </div>
+      </div>
+      {common.length > 0 && <p className="mt-3 text-xs text-muted-foreground">Most-used chords: <span className="font-bold text-foreground">{common.join(" · ")}</span></p>}
+      <p className="mt-1 text-[11px] text-muted-foreground">Major and minor chords only for now; sevenths and other colours show as their closest triad. Section letters group parts that sound alike (e.g. verse = A, chorus = B).</p>
     </div>
   );
 }

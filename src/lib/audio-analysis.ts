@@ -37,7 +37,7 @@ export function detectKey(chroma: number[]) {
   return { ...best, confidence: Math.max(0, Math.min(1, best.score * 0.6 + margin * 4)), alternates: results.slice(1, 4) };
 }
 
-function fftMag(re: Float32Array): Float32Array {
+export function fftMag(re: Float32Array): Float32Array {
   const n = re.length;
   const im = new Float32Array(n);
   for (let i = 1, j = 0; i < n; i++) {
