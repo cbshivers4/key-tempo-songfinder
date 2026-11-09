@@ -7,6 +7,6 @@
 - [ ] Hum to search (needs melody-recognition provider)
 - [ ] Instrument detection, stem separation, audio-to-MIDI (needs external GPU model service)
 - [ ] Chords, song structure, timeline
-- [ ] Vocoder analyzer
+- [x] Vocoder analyzer (live band bank, mic or file, record output)
 - [ ] Lyrics (authorized)
 - [ ] Accounts (Lovable Cloud), subscriptions (Stripe), admin dashboard

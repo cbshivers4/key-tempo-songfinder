@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Upload } from "lucide-react";
+import { Mic, Upload, AudioWaveform } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import logo from "@/assets/song-analyzer-logo.png";
 
@@ -38,6 +38,13 @@ function Index() {
           </span>
           <span className="font-display text-xl font-bold tracking-wider text-chrome">ANALYZE A SONG</span>
           <span className="text-center text-sm text-muted-foreground">Upload a recording to detect key, tempo and loudness.</span>
+        </Link>
+        <Link to="/vocoder" className="panel group flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
+          <span className="grid h-24 w-24 place-items-center rounded-full bg-secondary text-primary shadow-neon">
+            <AudioWaveform className="h-10 w-10" />
+          </span>
+          <span className="font-display text-xl font-bold tracking-wider text-chrome">VOCODER ANALYZER</span>
+          <span className="text-center text-sm text-muted-foreground">Run a voice or a song through a live band bank and watch it talk.</span>
         </Link>
       </div>
     </AppShell>
