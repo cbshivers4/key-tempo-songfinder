@@ -1,7 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Crown, LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform } from "lucide-react";
+import { Crown, LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { PaymentTestModeBanner } from "@/components/PaymentTestModeBanner";
 import logo from "@/assets/song-analyzer-logo.png";
@@ -16,6 +17,7 @@ const nav = [
 
 export function AppShell({ children }: { children: ReactNode }) {
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   return (
     <div className="min-h-screen pb-20 md:pb-0 md:pl-60">
       <aside className="fixed inset-y-0 left-0 hidden w-60 flex-col border-r bg-card/60 p-4 backdrop-blur md:flex">
@@ -34,6 +36,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
         <div className="mt-auto mb-4">
           <Link to="/pricing" className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-primary hover:bg-secondary" activeProps={{ className: "bg-secondary" }}><Crown className="h-4 w-4" /> Go Pro</Link>
+          {isAdmin && (
+            <Link to="/admin" className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}><ShieldCheck className="h-4 w-4" /> Admin</Link>
+          )}
           {user ? (
             <button onClick={() => supabase.auth.signOut()} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
               <LogOut className="h-4 w-4" /> <span className="truncate">Sign out · {user.email}</span>
