@@ -5,11 +5,11 @@
 - [x] Identification history / library (local)
 - [x] Upload, playback, key + BPM detection
 - [ ] Hum to search (needs melody-recognition provider)
-- [ ] Free instrument separation (browser Demucs), melody notes/MIDI export, lyrics search
+- [x] Free instrument separation (browser Demucs), melody notes/MIDI export, lyrics search — checked on synthetic audio and a real catalog search
 - [ ] Instrument identification and polyphonic transcription (not included in melody-only conversion)
 - [x] Chords, song structure, timeline (major/minor triads, A/B sections)
 - [x] Vocoder analyzer (live band bank, mic or file, record output)
-- [ ] Lyrics (authorized)
+- [ ] Licensed lyrics catalog (community LRCLIB search works; commercial licensing is not verified)
 - [x] Accounts (email, Google, Lovable) + library saved to account
 - [x] Subscriptions + admin dashboard (roles, stats, recent subscriptions)
 
