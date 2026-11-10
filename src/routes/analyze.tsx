@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Upload, Play, Pause, Square, Repeat } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -146,7 +146,7 @@ function Analyze() {
           </div>
           <Timeline res={res} t={t} seek={(x) => { if (a) a.currentTime = x; }} />
 
-          <p className="text-xs text-muted-foreground">Instruments, stems, notes/MIDI and lyrics are coming in the next build stages. The vocoder lives in its own tab.</p>
+          <div className="flex flex-wrap gap-4 text-sm text-primary"><Link to="/studio">Stems & MIDI →</Link><Link to="/lyrics">Lyrics →</Link><Link to="/vocoder">Vocoder →</Link></div>
         </div>
       )}
     </AppShell>
