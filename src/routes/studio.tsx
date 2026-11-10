@@ -22,6 +22,7 @@ type Stem = { name: string; url: string; blob: Blob };
 
 function Studio() {
   const [mode, setMode] = useState<'stems' | 'midi'>('stems');
+  const [transcription, setTranscription] = useState<'melody' | 'polyphonic'>('melody');
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [phase, setPhase] = useState('');
@@ -48,12 +49,29 @@ function Studio() {
       if (job !== generation.current) return;
       if (left === null) { setLimit(true); setBusy(false); return; }
       if (mode === 'midi') {
-        setPhase('Detecting melody notes');
+        setPhase(transcription === 'melody' ? 'Detecting melody notes' : 'Loading multi-note model');
         const { detectMelody, melodyMidi } = await import('@/lib/melody');
         const mono = new Float32Array(buffer.length);
         for (let c = 0; c < buffer.numberOfChannels; c++) {
           const channel = buffer.getChannelData(c);
           for (let i = 0; i < mono.length; i++) mono[i] = (mono[i] ?? 0) + (channel[i] ?? 0) / buffer.numberOfChannels;
+        }
+        if (transcription === 'polyphonic') {
+          const w = new Worker(new URL('../lib/transcription.worker.ts', import.meta.url), { type: 'module' });
+          worker.current = w;
+          const fail = (message: string) => { if (job !== generation.current) return; setError(message); setBusy(false); w.terminate(); worker.current = null; };
+          w.onerror = () => fail('The multi-note engine could not load. Please try again.');
+          w.onmessage = (event: MessageEvent<{ type: string; progress: number; phase: string; notes: MelodyNote[]; message: string }>) => {
+            if (job !== generation.current) return;
+            if (event.data.type === 'progress') { setProgress(event.data.progress); setPhase(event.data.phase); }
+            if (event.data.type === 'error') fail(event.data.message);
+            if (event.data.type === 'done') {
+              setNotes(event.data.notes); setMidi(new Blob([melodyMidi(event.data.notes)], { type: 'audio/midi' }));
+              setBusy(false); setProgress(1); setPhase('Complete'); w.terminate(); worker.current = null;
+            }
+          };
+          w.postMessage({ samples: mono }, [mono.buffer]);
+          return;
         }
         const result = await detectMelody(mono, buffer.sampleRate, p => { if (job === generation.current) setProgress(p); });
         if (job !== generation.current) return;
@@ -87,7 +105,11 @@ function Studio() {
       <Button role="tab" aria-selected={mode === 'stems'} disabled={busy} variant={mode === 'stems' ? 'default' : 'outline'} onClick={() => { setMode('stems'); setError(''); }}><Scissors /> Separate instruments</Button>
       <Button role="tab" aria-selected={mode === 'midi'} disabled={busy} variant={mode === 'midi' ? 'default' : 'outline'} onClick={() => { setMode('midi'); setError(''); }}><Music2 /> Notes / MIDI</Button>
     </div>
-    <p className="mt-4 text-sm text-muted-foreground">{mode === 'stems' ? 'Vocals · drums · bass · other instruments. First run downloads a 181 MB model. Processing can be slow and memory-intensive, especially on phones.' : 'Single-note melody estimate. Best with a solo voice, bass or instrument; chords and full arrangements are not transcribed reliably.'}</p>
+    {mode === 'midi' && <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Transcription type">
+      <Button variant={transcription === 'melody' ? 'secondary' : 'outline'} aria-pressed={transcription === 'melody'} disabled={busy} onClick={() => { setTranscription('melody'); setNotes(null); setMidi(null); }}>Single melody</Button>
+      <Button variant={transcription === 'polyphonic' ? 'secondary' : 'outline'} aria-pressed={transcription === 'polyphonic'} disabled={busy} onClick={() => { setTranscription('polyphonic'); setNotes(null); setMidi(null); }}>Multiple notes</Button>
+    </div>}
+    <p className="mt-4 text-sm text-muted-foreground">{mode === 'stems' ? 'Vocals · drums · bass · other instruments. First run downloads a 181 MB model. Processing can be slow and memory-intensive, especially on phones.' : transcription === 'melody' ? 'Single-note melody estimate. Best with a solo voice, bass or instrument.' : 'Overlapping-note estimates powered by Spotify Basic Pitch. Best on one isolated instrument; dense mixes and drums may produce incorrect notes.'}</p>
     <p className="mt-2 text-xs text-muted-foreground">Audio stays on your device. No paid service required.</p>
     <label className={`mt-6 flex min-h-40 flex-col items-center justify-center gap-3 rounded-lg border border-dashed p-6 text-center ${busy ? 'opacity-50' : 'cursor-pointer hover:border-primary'}`}>
       <Upload className="h-8 w-8 text-primary" />
@@ -102,7 +124,7 @@ function Studio() {
     {error && <p role="alert" className="mt-4 text-sm text-destructive">{error}</p>}
     {limit && <UpgradeNotice />}
     {mode === 'stems' && stems.length > 0 && <section className="mt-8 border-t pt-6"><h2 className="font-display text-lg text-primary">SEPARATED TRACKS</h2><div className="mt-4 grid gap-4 sm:grid-cols-2">{stems.map(stem => <div key={stem.name} className="rounded-lg border bg-card p-4"><div className="flex items-center justify-between"><h3 className="font-bold capitalize">{stem.name === 'other' ? 'Other instruments' : stem.name}</h3><Button size="icon" variant="ghost" aria-label={`Download ${stem.name}`} title={`Download ${stem.name} WAV`} onClick={() => downloadMusic(stem.blob, `${base}-${stem.name}.wav`)}><Download /></Button></div><audio aria-label={`${stem.name} playback`} src={stem.url} controls className="mt-3 w-full" /></div>)}</div></section>}
-    {mode === 'midi' && notes && <section className="mt-8 border-t pt-6"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-lg text-primary">{notes.length} NOTES DETECTED</h2>{midi && notes.length > 0 && <Button variant="outline" onClick={() => downloadMusic(midi, `${base}-melody.mid`)}><Download /> MIDI</Button>}</div>
+    {mode === 'midi' && notes && <section className="mt-8 border-t pt-6"><div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-display text-lg text-primary">{notes.length} NOTES DETECTED</h2>{midi && notes.length > 0 && <Button variant="outline" onClick={() => downloadMusic(midi, `${base}-notes.mid`)}><Download /> MIDI</Button>}</div>
       {notes.length === 0 ? <p className="mt-4 text-muted-foreground">No clear melody found. Try a solo voice or instrument recording.</p> : <div className="mt-4 max-h-96 overflow-auto"><table className="w-full text-left text-sm"><thead className="sticky top-0 bg-background"><tr><th className="py-3">Note</th><th>Start</th><th>Duration</th></tr></thead><tbody>{notes.map((note, i) => <tr key={i} className="border-t"><td className="py-2 font-bold text-primary">{noteName(note.midi)}</td><td>{note.start.toFixed(2)}s</td><td>{note.duration.toFixed(2)}s</td></tr>)}</tbody></table></div>}
     </section>}
   </AppShell>;

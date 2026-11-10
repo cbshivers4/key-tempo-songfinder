@@ -6,7 +6,8 @@
 - [x] Upload, playback, key + BPM detection
 - [ ] Hum to search (needs melody-recognition provider)
 - [x] Free instrument separation (browser Demucs), melody notes/MIDI export, lyrics search — checked on synthetic audio and a real catalog search
-- [ ] Instrument identification and polyphonic transcription (not included in melody-only conversion)
+- [ ] Free multi-note transcription with Spotify Basic Pitch
+- [ ] Instrument identification (needs an instrument-classification model)
 - [x] Chords, song structure, timeline (major/minor triads, A/B sections)
 - [x] Vocoder analyzer (live band bank, mic or file, record output)
 - [ ] Licensed lyrics catalog (community LRCLIB search works; commercial licensing is not verified)
