@@ -1,11 +1,13 @@
 import * as ort from 'onnxruntime-web/wasm';
 import { DemucsProcessor } from 'demucs-web';
-import wasmUrl from 'onnxruntime-web/ort-wasm-simd-threaded.wasm?url';
-import moduleUrl from 'onnxruntime-web/ort-wasm-simd-threaded.mjs?url';
+import wasmAsset from '../../public/wasm/ort-wasm-simd-threaded.wasm.asset.json';
 
 self.onmessage = async (event: MessageEvent<{ left: Float32Array; right: Float32Array }>) => {
   ort.env.wasm.numThreads = 1;
-  ort.env.wasm.wasmPaths = { wasm: wasmUrl, mjs: moduleUrl };
+  ort.env.wasm.wasmPaths = {
+    wasm: new URL(wasmAsset.url, self.location.origin).href,
+    mjs: new URL('/wasm/ort-wasm-simd-threaded.mjs', self.location.origin).href,
+  };
   const processor = new DemucsProcessor({
     ort,
     sessionOptions: { executionProviders: ['wasm'], enableCpuMemArena: false, enableMemPattern: false },
