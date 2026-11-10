@@ -15,9 +15,11 @@ import { Route as AnalyzeRouteImport } from './routes/analyze'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IdentifyRouteImport } from './routes/identify'
 import { Route as LibraryRouteImport } from './routes/library'
+import { Route as LyricsRouteImport } from './routes/lyrics'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RefundsRouteImport } from './routes/refunds'
+import { Route as StudioRouteImport } from './routes/studio'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VocoderRouteImport } from './routes/vocoder'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
@@ -53,6 +55,11 @@ const LibraryRoute = LibraryRouteImport.update({
   path: '/library',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LyricsRoute = LyricsRouteImport.update({
+  id: '/lyrics',
+  path: '/lyrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -66,6 +73,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const RefundsRoute = RefundsRouteImport.update({
   id: '/refunds',
   path: '/refunds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudioRoute = StudioRouteImport.update({
+  id: '/studio',
+  path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -97,9 +109,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/lyrics': typeof LyricsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/studio': typeof StudioRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -112,9 +126,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/lyrics': typeof LyricsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/studio': typeof StudioRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -128,9 +144,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/identify': typeof IdentifyRoute
   '/library': typeof LibraryRoute
+  '/lyrics': typeof LyricsRoute
   '/pricing': typeof PricingRoute
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
+  '/studio': typeof StudioRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -145,9 +163,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/identify'
     | '/library'
+    | '/lyrics'
     | '/pricing'
     | '/privacy'
     | '/refunds'
+    | '/studio'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -160,9 +180,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/identify'
     | '/library'
+    | '/lyrics'
     | '/pricing'
     | '/privacy'
     | '/refunds'
+    | '/studio'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -175,9 +197,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/identify'
     | '/library'
+    | '/lyrics'
     | '/pricing'
     | '/privacy'
     | '/refunds'
+    | '/studio'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -191,9 +215,11 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   IdentifyRoute: typeof IdentifyRoute
   LibraryRoute: typeof LibraryRoute
+  LyricsRoute: typeof LyricsRoute
   PricingRoute: typeof PricingRoute
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
+  StudioRoute: typeof StudioRoute
   TermsRoute: typeof TermsRoute
   VocoderRoute: typeof VocoderRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
@@ -244,6 +270,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LibraryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/lyrics': {
+      id: '/lyrics'
+      path: '/lyrics'
+      fullPath: '/lyrics'
+      preLoaderRoute: typeof LyricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pricing': {
       id: '/pricing'
       path: '/pricing'
@@ -263,6 +296,13 @@ declare module '@tanstack/react-router' {
       path: '/refunds'
       fullPath: '/refunds'
       preLoaderRoute: typeof RefundsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/studio': {
+      id: '/studio'
+      path: '/studio'
+      fullPath: '/studio'
+      preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -303,9 +343,11 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   IdentifyRoute: IdentifyRoute,
   LibraryRoute: LibraryRoute,
+  LyricsRoute: LyricsRoute,
   PricingRoute: PricingRoute,
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
+  StudioRoute: StudioRoute,
   TermsRoute: TermsRoute,
   VocoderRoute: VocoderRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,

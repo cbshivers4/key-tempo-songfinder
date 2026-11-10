@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Upload, AudioWaveform } from "lucide-react";
+import { Mic, Upload, AudioWaveform, Scissors, FileText } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import logo from "@/assets/song-analyzer-logo.png";
 
@@ -45,6 +45,16 @@ function Index() {
           </span>
           <span className="font-display text-xl font-bold tracking-wider text-chrome">VOCODER ANALYZER</span>
           <span className="text-center text-sm text-muted-foreground">Run a voice or a song through a live band bank and watch it talk.</span>
+        </Link>
+        <Link to="/studio" className="panel flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
+          <Scissors className="h-12 w-12 text-primary" />
+          <span className="font-display text-xl font-bold text-chrome">STEMS & MIDI</span>
+          <span className="text-center text-sm text-muted-foreground">Vocals, drums, bass and other tracks. Melody notes and MIDI export.</span>
+        </Link>
+        <Link to="/lyrics" className="panel flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
+          <FileText className="h-12 w-12 text-primary" />
+          <span className="font-display text-xl font-bold text-chrome">LYRICS</span>
+          <span className="text-center text-sm text-muted-foreground">Find lyrics by song title and artist.</span>
         </Link>
       </div>
     </AppShell>
