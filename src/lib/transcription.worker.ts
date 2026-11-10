@@ -5,6 +5,8 @@ import { polyphonicNotes } from './polyphonic';
 self.onmessage = async (event: MessageEvent<{ samples: Float32Array }>) => {
   let model: tf.GraphModel | undefined;
   try {
+    // TensorFlow 3 does not detect WorkerGlobalScope as its browser global.
+    tf.env().global.atob = self.atob.bind(self);
     await tf.setBackend('cpu'); await tf.ready();
     self.postMessage({ type: 'progress', progress: 0, phase: 'Loading multi-note model' });
     model = await tf.loadGraphModel(new URL('/models/basic-pitch/model.json', self.location.origin).href);
