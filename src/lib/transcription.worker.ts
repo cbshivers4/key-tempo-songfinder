@@ -15,6 +15,6 @@ self.onmessage = async (event: MessageEvent<{ samples: Float32Array }>) => {
       progress => self.postMessage({ type: 'progress', progress, phase: 'Detecting overlapping notes' }),
     );
     self.postMessage({ type: 'done', notes: polyphonicNotes(frames, onsets, event.data.samples.length / 22050) });
-  } catch { self.postMessage({ type: 'error', message: 'Multi-note transcription could not finish. Try a shorter solo-instrument recording.' }); }
+  } catch (error) { console.error('Transcription failed', error); self.postMessage({ type: 'error', message: 'Multi-note transcription could not finish. Try a shorter solo-instrument recording.' }); }
   finally { model?.dispose(); }
 };
