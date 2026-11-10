@@ -1,7 +1,7 @@
 import * as ort from 'onnxruntime-web/wasm';
 import { DemucsProcessor } from 'demucs-web';
-import wasmUrl from 'onnxruntime-web/dist/ort-wasm-simd-threaded.wasm?url';
-import moduleUrl from 'onnxruntime-web/dist/ort-wasm-simd-threaded.mjs?url';
+import wasmUrl from 'onnxruntime-web/ort-wasm-simd-threaded.wasm?url';
+import moduleUrl from 'onnxruntime-web/ort-wasm-simd-threaded.mjs?url';
 
 self.onmessage = async (event: MessageEvent<{ left: Float32Array; right: Float32Array }>) => {
   ort.env.wasm.numThreads = 1;
