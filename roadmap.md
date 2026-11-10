@@ -5,7 +5,8 @@
 - [x] Identification history / library (local)
 - [x] Upload, playback, key + BPM detection
 - [ ] Hum to search (needs melody-recognition provider)
-- [ ] Instrument detection, stem separation, audio-to-MIDI (needs external GPU model service)
+- [ ] Free instrument separation (browser Demucs), melody notes/MIDI export, lyrics search
+- [ ] Instrument identification and polyphonic transcription (not included in melody-only conversion)
 - [x] Chords, song structure, timeline (major/minor triads, A/B sections)
 - [x] Vocoder analyzer (live band bank, mic or file, record output)
 - [ ] Lyrics (authorized)
