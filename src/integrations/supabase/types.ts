@@ -132,6 +132,10 @@ export type Database = {
         Args: { check_env: string; free_limit?: number }
         Returns: number
       }
+      consume_use_for: {
+        Args: { _user: string; check_env: string }
+        Returns: number
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
