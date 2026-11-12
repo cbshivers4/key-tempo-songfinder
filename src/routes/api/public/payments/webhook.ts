@@ -29,6 +29,7 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
     status,
     current_period_start: currentBillingPeriod?.startsAt,
     current_period_end: currentBillingPeriod?.endsAt,
+    cancel_at_period_end: data.scheduledChange?.action === 'cancel',
     environment: env,
     updated_at: new Date().toISOString(),
   } as never, { onConflict: 'paddle_subscription_id' });
@@ -36,6 +37,8 @@ async function handleSubscriptionCreated(data: any, env: PaddleEnv) {
 
 async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
   const { id, status, currentBillingPeriod, scheduledChange } = data;
+  const { data: existing } = await getSupabase().from('subscriptions').select('id').eq('paddle_subscription_id', id).maybeSingle();
+  if (!existing) return handleSubscriptionCreated(data, env);
   await getSupabase().from('subscriptions').update({
     status,
     current_period_start: currentBillingPeriod?.startsAt,
@@ -46,7 +49,7 @@ async function handleSubscriptionUpdated(data: any, env: PaddleEnv) {
 }
 
 async function handleSubscriptionCanceled(data: any, env: PaddleEnv) {
-  await getSupabase().from('subscriptions').update({ status: 'canceled', updated_at: new Date().toISOString() } as never)
+  await getSupabase().from('subscriptions').update({ status: 'canceled', cancel_at_period_end: false, current_period_end: data.canceledAt ?? new Date().toISOString(), updated_at: new Date().toISOString() } as never)
     .eq('paddle_subscription_id', data.id).eq('environment', env);
 }
 

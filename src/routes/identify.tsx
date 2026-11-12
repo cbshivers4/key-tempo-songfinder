@@ -4,7 +4,6 @@ import { Mic, Square, ExternalLink } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { recognizeSong, type RecognizedSong } from "@/lib/recognize.functions";
 import { addToHistory } from "@/lib/history";
-import { getPaddleEnvironment } from "@/lib/paddle";
 import { useAuth } from "@/hooks/useAuth";
 import { UpgradeNotice } from "@/components/UpgradeNotice";
 
