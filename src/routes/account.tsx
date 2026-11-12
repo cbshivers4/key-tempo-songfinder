@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { useSubscription } from "@/hooks/useSubscription";
+import { hasUnlimitedUse } from "@/lib/payments-env";
 import { deleteAccount } from "@/utils/payments.functions";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -20,7 +21,7 @@ export const Route = createFileRoute("/account")({
 });
 
 function Account() {
-  const { user, sub, active, loaded } = useSubscription();
+  const { user, plan, active, loaded } = useSubscription();
   const navigate = useNavigate();
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
@@ -36,6 +37,10 @@ function Account() {
     finally { setBusy(false); }
   }
 
+  const planLabel = plan === "free_grant" ? "Pro — free access"
+    : hasUnlimitedUse(plan) ? (plan === "trial" ? "Pro — free trial" : "Pro")
+    : "Free — 3 uses a day";
+
   return (
     <AppShell>
       <div className="mx-auto max-w-md space-y-6">
@@ -48,8 +53,10 @@ function Account() {
               <div className="text-muted-foreground">Signed in as</div>
               <div>{user.email}</div>
               <div className="pt-2 text-muted-foreground">Plan</div>
-              <div>{active ? (sub?.status === "trialing" ? "Pro — free trial" : "Pro") : "Free — 3 uses a day"}</div>
-              <Link to="/pricing" className="inline-block pt-2 text-primary underline">{active ? "Manage billing" : "Go Pro"}</Link>
+              <div>{planLabel}</div>
+              <Link to="/pricing" className="inline-block pt-2 text-primary underline">
+                {plan === "free_grant" ? "Plan details" : active ? "Manage billing" : "Go Pro"}
+              </Link>
             </div>
             <div className="panel space-y-3 border-destructive/50 p-5 text-sm">
               <h2 className="font-display tracking-wider text-destructive">DELETE ACCOUNT</h2>

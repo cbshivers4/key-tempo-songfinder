@@ -21,10 +21,9 @@ export const Route = createFileRoute("/pricing")({
 });
 
 function Pricing() {
-  const { user, sub, active, loaded } = useSubscription();
+  const { user, sub, plan, loaded } = useSubscription();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
-  const returning = !!sub;
 
   async function subscribe() {
     if (!user) return;
@@ -50,6 +49,7 @@ function Pricing() {
   }
 
   const end = sub?.current_period_end ? new Date(sub.current_period_end).toLocaleDateString() : "";
+  const paying = plan === "free" || plan === "returning";
   return (
     <AppShell>
       <div className="mx-auto max-w-md text-center">
@@ -69,22 +69,33 @@ function Pricing() {
           <div className="mt-6">
             {!loaded ? null : !user ? (
               <Link to="/auth" className="block rounded-full bg-primary py-3 text-center font-display text-sm tracking-wider text-primary-foreground">SIGN IN TO START</Link>
-            ) : active ? (
+            ) : plan === "free_grant" ? (
+              <div className="space-y-1 text-center">
+                <p className="text-sm">This account has free access — no card, no charges.</p>
+                <p className="text-xs text-muted-foreground">Unlimited use of every tool is switched on.</p>
+              </div>
+            ) : paying ? (
+              <button onClick={subscribe} disabled={busy} className="w-full rounded-full bg-primary py-3 font-display text-sm tracking-wider text-primary-foreground disabled:opacity-60">
+                {busy ? "OPENING…" : plan === "returning" ? "RESUBSCRIBE — $9.95/MONTH" : "START 7-DAY FREE TRIAL"}
+              </button>
+            ) : (
               <div className="space-y-2 text-center">
                 <p className="text-sm">
-                  {sub?.status === "trialing" ? `You're on your free trial until ${end}.` : sub?.status === "canceled" || sub?.cancel_at_period_end ? `Pro ends on ${end}.` : "You're on Pro. Enjoy unlimited use."}
+                  {plan === "trial" ? `You're on your free trial until ${end}.`
+                    : plan === "ending" ? `Pro ends on ${end}.`
+                    : plan === "past_due" ? "Your last payment didn't go through. Please update your card."
+                    : "You're on Pro. Enjoy unlimited use."}
                 </p>
-                {sub?.status === "past_due" && <p className="text-xs text-destructive">Your last payment didn't go through. Please update your card.</p>}
                 <button onClick={manage} disabled={busy} className="w-full rounded-full border py-3 font-display text-sm tracking-wider">MANAGE BILLING</button>
               </div>
-            ) : (
-              <button onClick={subscribe} disabled={busy} className="w-full rounded-full bg-primary py-3 font-display text-sm tracking-wider text-primary-foreground disabled:opacity-60">
-                {busy ? "OPENING…" : returning ? "RESUBSCRIBE — $9.95/MONTH" : "START 7-DAY FREE TRIAL"}
-              </button>
             )}
           </div>
           {err && <p className="mt-3 text-center text-sm text-destructive">{err}</p>}
-          <p className="mt-4 text-center text-[11px] text-muted-foreground">{returning && !active ? "Your free trial has been used, so billing starts today. Cancel anytime." : "A card is needed to start. You won't be charged until day 8, and you can cancel before then. One free trial per account."}</p>
+          {plan !== "free_grant" && (
+            <p className="mt-4 text-center text-[11px] text-muted-foreground">
+              {plan === "returning" ? "Your free trial has been used, so billing starts today. Cancel anytime." : "A card is needed to start. You won't be charged until day 8, and you can cancel before then. One free trial per account."}
+            </p>
+          )}
         </div>
       </div>
     </AppShell>
