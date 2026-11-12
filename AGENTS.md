@@ -33,8 +33,10 @@ use the editor.
 
 - Browser-only audio code (Web Audio graphs, canvas drawing) lives in `src/lib`, is instantiated only inside a user gesture, and never runs at module import — SSR and prerender evaluate imports, so anything touching `AudioContext` or `document` at import time breaks the build or the first paint.
 - Library storage: signed-out users save to localStorage, signed-in users to the library_songs table (RLS per user); local songs move into the account on sign-in — keeps the app usable without an account.
-- Free-use limits are enforced by the consume_use database function (server-side for Song Finder via the recognize server fn); Analyze/Vocoder run in the browser so their gate is client-side, and signed-out counts live in localStorage — a DB function keeps the count atomic.
 - Stems and melody processing run locally from user gestures; Demucs runs in a terminable single-thread WASM worker to avoid blocking the page or requiring cross-origin isolation that disrupts checkout. Lyrics use a validated LRCLIB server function without storing lyrics or claiming catalog licensing.
 - WASM binaries are URL-loaded only after a user gesture, never imported into source; oversized binaries use hosted asset pointers under public/wasm with the version-matched loader, keeping deployment bundles and repository files within platform limits.
 - Multi-note transcription uses Basic Pitch in a terminable CPU worker with locally served model files; retain single-melody mode for faster lightweight analysis and never treat inferred notes as instrument identification.
 - Instrument identification uses locally served YAMNet in a terminable CPU worker and reports ranked model scores as estimates, with a no-match result below a minimum score — never present them as confirmed identifications.
+
+- Free-use limits are enforced by the service-only consume_use_for function called from server functions, with the payments environment taken from the build, never the browser — stops users raising their own limit or using test subscriptions on the live site. Analyze/Vocoder gates stay client-side; signed-out counts live in localStorage.
+- Checkout price is chosen server-side (getCheckoutPrice): accounts with any prior subscription get the no-trial price — enforces one free trial per account.

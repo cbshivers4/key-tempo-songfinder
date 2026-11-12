@@ -56,14 +56,16 @@ async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeR
 // Signed-in only: each identification uses one free daily use unless subscribed (enforced in the database).
 export const recognizeSong = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { audioBase64: string; mime: string; environment: "sandbox" | "live" }) => {
+  .inputValidator((d: { audioBase64: string; mime: string }) => {
     if (typeof d?.audioBase64 !== "string" || d.audioBase64.length > 8_000_000) throw new Error("Invalid audio");
     return d;
   })
   .handler(async ({ data, context }): Promise<RecognizeResult> => {
     const token = process.env["AUDD_API_TOKEN"];
     if (!token) return { status: "not_configured" };
-    const { data: remaining, error } = await context.supabase.rpc("consume_use", { check_env: data.environment === "sandbox" ? "sandbox" : "live", free_limit: 3 });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { buildPaymentsEnv } = await import("@/lib/payments-env");
+    const { data: remaining, error } = await supabaseAdmin.rpc("consume_use_for", { _user: context.userId, check_env: buildPaymentsEnv() });
     if (error) return { status: "error", message: "Couldn't check your plan" };
     if (remaining === null) return { status: "limit" };
     try {

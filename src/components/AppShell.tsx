@@ -42,9 +42,12 @@ export function AppShell({ children }: { children: ReactNode }) {
             <Link to="/admin" className="mb-1 flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary" activeProps={{ className: "bg-secondary text-primary" }}><ShieldCheck className="h-4 w-4" /> Admin</Link>
           )}
           {user ? (
+            <>
             <button onClick={() => supabase.auth.signOut()} className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary">
               <LogOut className="h-4 w-4" /> <span className="truncate">Sign out · {user.email}</span>
             </button>
+            <Link to="/account" className="block px-3 py-1 text-xs text-muted-foreground hover:text-foreground">Account settings</Link>
+            </>
           ) : (
             <Link to="/auth" className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-muted-foreground hover:bg-secondary"><LogIn className="h-4 w-4" /> Sign in</Link>
           )}

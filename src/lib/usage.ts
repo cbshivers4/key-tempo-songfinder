@@ -1,5 +1,4 @@
 import { consumeUse } from "@/utils/payments.functions";
-import { getPaddleEnvironment } from "./paddle";
 import { supabase } from "@/integrations/supabase/client";
 
 export const FREE_USES_PER_DAY = 3;
@@ -15,7 +14,7 @@ export function nextLocalCount(stored: { day: string; uses: number } | null, tod
 /** Uses one free use (all tools combined). Returns remaining (-1 unlimited) or null when out. */
 export async function takeFreeUse(): Promise<number | null> {
   const { data } = await supabase.auth.getSession();
-  if (data.session) return (await consumeUse({ data: { environment: getPaddleEnvironment() } })).remaining;
+  if (data.session) return (await consumeUse()).remaining;
   const today = new Date().toISOString().slice(0, 10);
   let stored: { day: string; uses: number } | null = null;
   try { stored = JSON.parse(localStorage.getItem(KEY) ?? "null"); } catch { /* ignore */ }

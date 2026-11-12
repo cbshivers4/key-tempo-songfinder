@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useSubscription } from "@/hooks/useSubscription";
-import { initializePaddle, getPaddlePriceId, getPaddleEnvironment } from "@/lib/paddle";
-import { openCustomerPortal } from "@/utils/payments.functions";
+import { initializePaddle } from "@/lib/paddle";
+import { openCustomerPortal, getCheckoutPrice } from "@/utils/payments.functions";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -24,13 +24,14 @@ function Pricing() {
   const { user, sub, active, loaded } = useSubscription();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
+  const returning = !!sub;
 
   async function subscribe() {
     if (!user) return;
     setBusy(true); setErr("");
     try {
       await initializePaddle();
-      const priceId = await getPaddlePriceId("pro_monthly");
+      const { paddlePriceId: priceId } = await getCheckoutPrice();
       window.Paddle.Checkout.open({
         items: [{ priceId, quantity: 1 }],
         customer: user.email ? { email: user.email } : undefined,
@@ -43,7 +44,7 @@ function Pricing() {
 
   async function manage() {
     setBusy(true); setErr("");
-    try { const { url } = await openCustomerPortal({ data: { environment: getPaddleEnvironment() } }); window.open(url, "_blank"); }
+    try { const { url } = await openCustomerPortal(); window.open(url, "_blank"); }
     catch { setErr("Couldn't open your billing page. Please try again."); }
     finally { setBusy(false); }
   }
@@ -78,12 +79,12 @@ function Pricing() {
               </div>
             ) : (
               <button onClick={subscribe} disabled={busy} className="w-full rounded-full bg-primary py-3 font-display text-sm tracking-wider text-primary-foreground disabled:opacity-60">
-                {busy ? "OPENING…" : "START 7-DAY FREE TRIAL"}
+                {busy ? "OPENING…" : returning ? "RESUBSCRIBE — $9.95/MONTH" : "START 7-DAY FREE TRIAL"}
               </button>
             )}
           </div>
           {err && <p className="mt-3 text-center text-sm text-destructive">{err}</p>}
-          <p className="mt-4 text-center text-[11px] text-muted-foreground">A card is needed to start. You won't be charged until day 8, and you can cancel before then.</p>
+          <p className="mt-4 text-center text-[11px] text-muted-foreground">{returning && !active ? "Your free trial has been used, so billing starts today. Cancel anytime." : "A card is needed to start. You won't be charged until day 8, and you can cancel before then. One free trial per account."}</p>
         </div>
       </div>
     </AppShell>
