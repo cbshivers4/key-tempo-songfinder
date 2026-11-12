@@ -53,7 +53,7 @@ export const deleteAccount = createServerFn({ method: "POST" })
       try { await getPaddleClient(s.environment as "sandbox" | "live").subscriptions.cancel(s.paddle_subscription_id, { effectiveFrom: "immediately" }); }
       catch (e) { console.error("Cancel failed", s.paddle_subscription_id, e); throw new Error("Couldn't cancel your subscription. Please try again."); }
     }
-    for (const t of ["library_songs", "daily_usage", "subscriptions", "user_roles"] as const) {
+    for (const t of ["library_songs", "daily_usage", "subscriptions", "user_roles", "pro_grants"] as const) {
       const { error } = await supabaseAdmin.from(t).delete().eq("user_id", uid);
       if (error) throw new Error("Couldn't erase your data. Please try again.");
     }
