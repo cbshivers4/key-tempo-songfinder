@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { useSubscription } from "@/hooks/useSubscription";
-import { initializePaddle, getPaddlePriceId, getPaddleEnvironment } from "@/lib/paddle";
-import { openCustomerPortal } from "@/utils/payments.functions";
+import { initializePaddle } from "@/lib/paddle";
+import { openCustomerPortal, getCheckoutPrice } from "@/utils/payments.functions";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -30,7 +30,7 @@ function Pricing() {
     setBusy(true); setErr("");
     try {
       await initializePaddle();
-      const priceId = await getPaddlePriceId("pro_monthly");
+      const { paddlePriceId: priceId } = await getCheckoutPrice();
       window.Paddle.Checkout.open({
         items: [{ priceId, quantity: 1 }],
         customer: user.email ? { email: user.email } : undefined,
@@ -43,7 +43,7 @@ function Pricing() {
 
   async function manage() {
     setBusy(true); setErr("");
-    try { const { url } = await openCustomerPortal({ data: { environment: getPaddleEnvironment() } }); window.open(url, "_blank"); }
+    try { const { url } = await openCustomerPortal(); window.open(url, "_blank"); }
     catch { setErr("Couldn't open your billing page. Please try again."); }
     finally { setBusy(false); }
   }
