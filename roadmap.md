@@ -16,3 +16,4 @@
 
 - [x] Checkout for Pro ($9.95/mo, 7-day trial, card up front), 3 free uses/day combined, access until period end on cancel
 - [x] Policy pages (terms, refunds, privacy)
+- [x] Owner free access — only the owner's account is exempt from payment; verified the limit is lifted and no use is counted
