@@ -40,3 +40,4 @@ use the editor.
 
 - Free-use limits are enforced by the service-only consume_use_for function called from server functions, with the payments environment taken from the build, never the browser — stops users raising their own limit or using test subscriptions on the live site. Analyze/Vocoder gates stay client-side; signed-out counts live in localStorage.
 - Checkout price is chosen server-side (getCheckoutPrice): accounts with any prior subscription get the no-trial price — enforces one free trial per account.
+- AI Style Tags uses an authenticated server function and Lovable AI Gateway with an audio-capable model; clips are trimmed to 30 seconds and converted to WAV only after a user gesture, are never stored, and use a fresh per-request gateway provider with no automatic retries.

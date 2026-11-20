@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { Crown, LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform, ShieldCheck, Scissors, FileText } from "lucide-react";
+import { Crown, LogIn, LogOut, Mic, Upload, Library, Home, AudioWaveform, ShieldCheck, Scissors, FileText, Tags } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdmin } from "@/hooks/useAdmin";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ const nav = [
   { to: "/vocoder", label: "Vocoder", icon: AudioWaveform },
   { to: "/studio", label: "Stems & MIDI", icon: Scissors },
   { to: "/lyrics", label: "Lyrics", icon: FileText },
+  { to: "/style-tags", label: "Style Tags", icon: Tags },
   { to: "/library", label: "Library", icon: Library },
 ] as const;
 
@@ -68,7 +69,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           <Link to="/privacy" className="hover:text-primary">Privacy</Link>
           <a href="mailto:cbshivers@gmail.com" className="hover:text-primary">Contact</a>
         </footer></main>
-      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-7 border-t bg-card/95 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-8 border-t bg-card/95 backdrop-blur md:hidden">
         {nav.map((n) => (
           <Link key={n.to} to={n.to} activeOptions={{ exact: true }}
             className="flex min-w-0 flex-col items-center gap-1 py-3 text-center text-[9px] text-muted-foreground"

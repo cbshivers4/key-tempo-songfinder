@@ -21,6 +21,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RefundsRouteImport } from './routes/refunds'
 import { Route as StudioRouteImport } from './routes/studio'
+import { Route as StyleTagsRouteImport } from './routes/style-tags'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VocoderRouteImport } from './routes/vocoder'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
@@ -86,6 +87,11 @@ const StudioRoute = StudioRouteImport.update({
   path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StyleTagsRoute = StyleTagsRouteImport.update({
+  id: '/style-tags',
+  path: '/style-tags',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -121,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/studio': typeof StudioRoute
+  '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -139,6 +146,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/studio': typeof StudioRoute
+  '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -158,6 +166,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/refunds': typeof RefundsRoute
   '/studio': typeof StudioRoute
+  '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -178,6 +187,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/studio'
+    | '/style-tags'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/studio'
+    | '/style-tags'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/refunds'
     | '/studio'
+    | '/style-tags'
     | '/terms'
     | '/vocoder'
     | '/checkout/success'
@@ -233,6 +245,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RefundsRoute: typeof RefundsRoute
   StudioRoute: typeof StudioRoute
+  StyleTagsRoute: typeof StyleTagsRoute
   TermsRoute: typeof TermsRoute
   VocoderRoute: typeof VocoderRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
@@ -325,6 +338,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/style-tags': {
+      id: '/style-tags'
+      path: '/style-tags'
+      fullPath: '/style-tags'
+      preLoaderRoute: typeof StyleTagsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -369,6 +389,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RefundsRoute: RefundsRoute,
   StudioRoute: StudioRoute,
+  StyleTagsRoute: StyleTagsRoute,
   TermsRoute: TermsRoute,
   VocoderRoute: VocoderRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Upload, AudioWaveform, Scissors, FileText } from "lucide-react";
+import { Mic, Upload, AudioWaveform, Scissors, FileText, Tags } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import logo from "@/assets/song-analyzer-logo.png";
 
@@ -55,6 +55,11 @@ function Index() {
           <FileText className="h-12 w-12 text-primary" />
           <span className="font-display text-xl font-bold text-chrome">LYRICS</span>
           <span className="text-center text-sm text-muted-foreground">Find lyrics by song title and artist.</span>
+        </Link>
+        <Link to="/style-tags" className="panel flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
+          <Tags className="h-12 w-12 text-primary" />
+          <span className="font-display text-xl font-bold text-chrome">AI STYLE TAGS</span>
+          <span className="text-center text-sm text-muted-foreground">Turn a short clip into style and instrument tags for music discovery.</span>
         </Link>
       </div>
     </AppShell>

@@ -17,6 +17,7 @@
     "rolldown": "1.2.1"
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.93",
     "@hookform/resolvers": "^5.2.2",
     "@lovable.dev/cloud-auth-js": "^1.2.0",
     "@paddle/paddle-node-sdk": "^3.11.0",
@@ -55,6 +56,7 @@
     "@tanstack/router-plugin": "1.168.42",
     "@tensorflow/tfjs": "^3.21.0",
     "@tonejs/midi": "^2.0.28",
+    "ai": "^7.0.177",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
