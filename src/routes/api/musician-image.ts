@@ -50,7 +50,7 @@ export const Route = createFileRoute("/api/musician-image")({
 
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return errorResponse("AI image generation is not configured.", 500);
-        const prompt = `Photorealistic cinematic square portrait of a fictional adult musician actively playing the ${instrument}. Show the musician and the complete instrument clearly, with a believable playing posture. Tasteful dark stage lighting with subtle cyan accents, sharp realistic detail, no text, no logos, no watermark, no other people.`;
+        const prompt = `Cinematic square portrait of an original futuristic robot musician (sleek chrome-and-neon cyborg, not based on any existing character) actively playing the melody on the ${instrument}. Show the robot and the complete instrument clearly, with a believable playing posture and glowing musical notes flowing from the instrument. Dark techno stage lighting with cyan and magenta accents, sharp detail, no text, no logos, no watermark, no other figures.`;
         try {
           const upstream = await generateImage({ ...imageSettings, apiKey }, prompt, stream);
           return new Response(upstream.body, {

@@ -41,7 +41,7 @@ export function MusicianImage() {
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-secondary text-primary"><ImageIcon className="h-5 w-5" /></span>
       <div>
         <h2 id="musician-heading" className="font-display text-sm tracking-wider text-chrome">INSTRUMENT IN FOCUS</h2>
-        <p className="mt-1 text-xs text-muted-foreground">See an AI-generated musician playing the instrument you want to focus on.</p>
+        <p className="mt-1 text-xs text-muted-foreground">See a futuristic robot musician playing the melody on the instrument you choose.</p>
       </div>
     </div>
     <form onSubmit={(event) => void generate(event)} className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
@@ -49,15 +49,15 @@ export function MusicianImage() {
         <input value={instrument} onChange={(event) => setInstrument(event.target.value)} maxLength={60} required placeholder="e.g. electric guitar, drums, violin" className="block h-11 w-full rounded-md border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-ring" />
       </label>
       <Button type="submit" disabled={!instrument.trim() || busy || !ready || !user} className="h-11 font-display text-xs tracking-wider">
-        {busy ? <LoaderCircle className="animate-spin" /> : <Sparkles />}{busy ? "CREATING IMAGE…" : "SHOW MUSICIAN"}
+        {busy ? <LoaderCircle className="animate-spin" /> : <Sparkles />}{busy ? "CREATING IMAGE…" : "SHOW ROBOT MUSICIAN"}
       </Button>
     </form>
     {ready && !user && <p className="mt-3 text-sm text-muted-foreground"><Link to="/auth" className="text-primary underline">Sign in</Link> to generate a musician image — each image uses one of your 3 free daily uses.</p>}
     {error && <p role="alert" className="mt-3 text-sm text-destructive">{error}</p>}
     {limit && <UpgradeNotice />}
-    {busy && !imageUrl && <div className="mt-5 grid aspect-square w-full place-items-center rounded-xl border bg-background/40 text-center"><div><LoaderCircle className="mx-auto h-7 w-7 animate-spin text-primary" /><p className="mt-3 text-sm text-muted-foreground">Creating your {shownInstrument.toLowerCase()} musician…</p></div></div>}
+    {busy && !imageUrl && <div className="mt-5 grid aspect-square w-full place-items-center rounded-xl border bg-background/40 text-center"><div><LoaderCircle className="mx-auto h-7 w-7 animate-spin text-primary" /><p className="mt-3 text-sm text-muted-foreground">Building your {shownInstrument.toLowerCase()} robot musician…</p></div></div>}
     {imageUrl && <div className="mt-5 overflow-hidden rounded-xl border bg-background">
-      <img src={imageUrl} alt={`AI-generated musician playing ${shownInstrument}`} className={`aspect-square w-full object-cover transition-[filter] ${imageFinal ? "blur-0" : "blur-2xl"}`} />
+      <img src={imageUrl} alt={`AI-generated robot musician playing ${shownInstrument}`} className={`aspect-square w-full object-cover transition-[filter] ${imageFinal ? "blur-0" : "blur-2xl"}`} />
       <p className="px-4 py-3 text-xs text-muted-foreground">{imageFinal ? "AI-generated visual reference — not a real performer or a guide to exact technique." : "Finishing the image…"}</p>
     </div>}
     <p className="mt-3 text-[11px] text-muted-foreground">Visual reference only: key, tempo, chords and loudness are still measured from the full song, not an isolated instrument.</p>
