@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Upload, Play, Pause, Square, Repeat } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { UpgradeNotice } from "@/components/UpgradeNotice";
+import { MusicianImage } from "@/components/MusicianImage";
 import { takeFreeUse } from "@/lib/usage";
 import { chordSummary, detectChords, detectSections, frameChroma, type ChordSeg, type Section } from "@/lib/chords";
 import { computeChroma, detectKey, detectTempo, loudness, NOTE_NAMES, toMono, waveformPeaks } from "@/lib/audio-analysis";
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/analyze")({
   head: () => ({
     meta: [
       { title: "Analyze a Song — Song Analyzer" },
-      { name: "description", content: "Upload a recording to detect its key, scale, tempo and loudness." },
+      { name: "description", content: "Upload a recording to detect key, tempo and loudness, and see a musician playing your chosen instrument." },
       { property: "og:title", content: "Analyze a Song — Song Analyzer" },
-      { property: "og:description", content: "Real key and BPM detection from your audio files." },
+      { property: "og:description", content: "Real key and BPM detection plus AI musician images for your chosen instrument." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -93,6 +94,8 @@ function Analyze() {
       </label>
       {err && <p className="mt-3 text-sm text-destructive">{err}</p>}
         {limit && <UpgradeNotice />}
+
+      <MusicianImage />
 
       {res && (
         <div className="mt-8 space-y-6">

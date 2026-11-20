@@ -18,3 +18,4 @@
 - [x] Policy pages (terms, refunds, privacy)
 - [x] Owner free access — only the owner's account is exempt from payment; verified the limit is lifted and no use is counted
 - [x] AI Style Tags — 30-second clip upload, AI style/mood/instrument tags, editable search phrase, YouTube/Spotify discovery links and saved-library matching; real signed-in model response verified
+- [x] Analyze instrument visual — instrument input and streamed AI-generated musician image; real signed-in violin image verified in the preview

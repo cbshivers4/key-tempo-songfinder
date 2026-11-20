@@ -24,6 +24,7 @@ import { Route as StudioRouteImport } from './routes/studio'
 import { Route as StyleTagsRouteImport } from './routes/style-tags'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as VocoderRouteImport } from './routes/vocoder'
+import { Route as ApiMusicianImageRouteImport } from './routes/api/musician-image'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
@@ -102,6 +103,11 @@ const VocoderRoute = VocoderRouteImport.update({
   path: '/vocoder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMusicianImageRoute = ApiMusicianImageRouteImport.update({
+  id: '/api/musician-image',
+  path: '/api/musician-image',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   id: '/checkout/success',
   path: '/checkout/success',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
+  '/api/musician-image': typeof ApiMusicianImageRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -149,6 +156,7 @@ export interface FileRoutesByTo {
   '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
+  '/api/musician-image': typeof ApiMusicianImageRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/style-tags': typeof StyleTagsRoute
   '/terms': typeof TermsRoute
   '/vocoder': typeof VocoderRoute
+  '/api/musician-image': typeof ApiMusicianImageRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -190,6 +199,7 @@ export interface FileRouteTypes {
     | '/style-tags'
     | '/terms'
     | '/vocoder'
+    | '/api/musician-image'
     | '/checkout/success'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/style-tags'
     | '/terms'
     | '/vocoder'
+    | '/api/musician-image'
     | '/checkout/success'
     | '/api/public/payments/webhook'
   id:
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/style-tags'
     | '/terms'
     | '/vocoder'
+    | '/api/musician-image'
     | '/checkout/success'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
@@ -248,6 +260,7 @@ export interface RootRouteChildren {
   StyleTagsRoute: typeof StyleTagsRoute
   TermsRoute: typeof TermsRoute
   VocoderRoute: typeof VocoderRoute
+  ApiMusicianImageRoute: typeof ApiMusicianImageRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VocoderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/musician-image': {
+      id: '/api/musician-image'
+      path: '/api/musician-image'
+      fullPath: '/api/musician-image'
+      preLoaderRoute: typeof ApiMusicianImageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout/success': {
       id: '/checkout/success'
       path: '/checkout/success'
@@ -392,6 +412,7 @@ const rootRouteChildren: RootRouteChildren = {
   StyleTagsRoute: StyleTagsRoute,
   TermsRoute: TermsRoute,
   VocoderRoute: VocoderRoute,
+  ApiMusicianImageRoute: ApiMusicianImageRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
