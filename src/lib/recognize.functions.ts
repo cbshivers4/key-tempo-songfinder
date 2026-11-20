@@ -28,7 +28,13 @@ async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeR
   form.append("return", "apple_music,spotify");
   const res = await fetch("https://api.audd.io/", { method: "POST", body: form });
   const json = (await res.json()) as any;
-  if (json.status !== "success") return { status: "error", message: json.error?.error_message ?? "Recognition failed" };
+  if (json.status !== "success") {
+    const raw = String(json.error?.error_message ?? "");
+    const message = /api_token/i.test(raw)
+      ? "Song recognition isn't available right now: the music database key is invalid or expired."
+      : raw || "Recognition failed";
+    return { status: "error", message };
+  }
   const r = json.result;
   if (!r) return { status: "no_match" };
   const links: { label: string; url: string }[] = [];

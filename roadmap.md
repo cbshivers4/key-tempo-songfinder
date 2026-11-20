@@ -20,3 +20,4 @@
 - [x] AI Style Tags — 30-second clip upload, AI style/mood/instrument tags, editable search phrase, YouTube/Spotify discovery links and saved-library matching; real signed-in model response verified
 - [x] Analyze instrument visual — instrument input and streamed AI-generated musician image; real signed-in violin image verified in the preview
 - [x] Personal music uploads — private account storage, library playback, favorites and deletion; real signed-in WAV upload, playback, reload persistence and deletion verified on desktop and phone layouts
+- [x] Song Finder can identify your own music — pick a device file or a saved My Music song, scrub to any part, and identify the 12 seconds from there; upload, library pick and identification request verified signed-in (provider key still needs renewal)
