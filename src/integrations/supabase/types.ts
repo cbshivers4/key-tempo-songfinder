@@ -122,6 +122,42 @@ export type Database = {
         }
         Relationships: []
       }
+      uploaded_songs: {
+        Row: {
+          artist: string
+          created_at: string
+          favorite: boolean
+          file_path: string
+          id: string
+          mime_type: string
+          size_bytes: number
+          title: string
+          user_id: string
+        }
+        Insert: {
+          artist?: string
+          created_at?: string
+          favorite?: boolean
+          file_path: string
+          id?: string
+          mime_type: string
+          size_bytes: number
+          title: string
+          user_id: string
+        }
+        Update: {
+          artist?: string
+          created_at?: string
+          favorite?: boolean
+          file_path?: string
+          id?: string
+          mime_type?: string
+          size_bytes?: number
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mic, Upload, AudioWaveform, Scissors, FileText, Tags } from "lucide-react";
+import { Mic, Upload, AudioWaveform, Scissors, FileText, Tags, Library } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import logo from "@/assets/song-analyzer-logo.png";
 
@@ -60,6 +60,11 @@ function Index() {
           <Tags className="h-12 w-12 text-primary" />
           <span className="font-display text-xl font-bold text-chrome">AI STYLE TAGS</span>
           <span className="text-center text-sm text-muted-foreground">Turn a short clip into style and instrument tags for music discovery.</span>
+        </Link>
+        <Link to="/library" className="panel flex flex-col items-center gap-4 p-8 transition hover:shadow-neon">
+          <Library className="h-12 w-12 text-primary" />
+          <span className="font-display text-xl font-bold text-chrome">MY MUSIC</span>
+          <span className="text-center text-sm text-muted-foreground">Upload your own songs and play them again from your private library.</span>
         </Link>
       </div>
     </AppShell>

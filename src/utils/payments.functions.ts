@@ -53,7 +53,14 @@ export const deleteAccount = createServerFn({ method: "POST" })
       try { await getPaddleClient(s.environment as "sandbox" | "live").subscriptions.cancel(s.paddle_subscription_id, { effectiveFrom: "immediately" }); }
       catch (e) { console.error("Cancel failed", s.paddle_subscription_id, e); throw new Error("Couldn't cancel your subscription. Please try again."); }
     }
-    for (const t of ["library_songs", "daily_usage", "subscriptions", "user_roles", "pro_grants"] as const) {
+    const { data: music, error: musicError } = await supabaseAdmin.from("uploaded_songs").select("file_path").eq("user_id", uid);
+    if (musicError) throw new Error("Couldn't find your uploaded music. Please try again.");
+    for (let i = 0; i < (music ?? []).length; i += 100) {
+      const paths = (music ?? []).slice(i, i + 100).map((song) => song.file_path);
+      const { error } = await supabaseAdmin.storage.from("user-music").remove(paths);
+      if (error) throw new Error("Couldn't erase your uploaded music. Please try again.");
+    }
+    for (const t of ["uploaded_songs", "library_songs", "daily_usage", "subscriptions", "user_roles", "pro_grants"] as const) {
       const { error } = await supabaseAdmin.from(t).delete().eq("user_id", uid);
       if (error) throw new Error("Couldn't erase your data. Please try again.");
     }

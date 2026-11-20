@@ -32,7 +32,7 @@ use the editor.
 ## Project rules
 
 - Browser-only audio code (Web Audio graphs, canvas drawing) lives in `src/lib`, is instantiated only inside a user gesture, and never runs at module import — SSR and prerender evaluate imports, so anything touching `AudioContext` or `document` at import time breaks the build or the first paint.
-- Library storage: signed-out users save to localStorage, signed-in users to the library_songs table (RLS per user); local songs move into the account on sign-in — keeps the app usable without an account.
+- Library storage: signed-out users save identified songs to localStorage, signed-in users to the library_songs table (RLS per user); local songs move into the account on sign-in — keeps the app usable without an account. Uploaded audio requires sign-in and lives in the private user-music bucket under the owner's UUID, with metadata in uploaded_songs; playback uses short-lived signed URLs, and deletion removes both the file and its row.
 - Stems and melody processing run locally from user gestures; Demucs runs in a terminable single-thread WASM worker to avoid blocking the page or requiring cross-origin isolation that disrupts checkout. Lyrics use a validated LRCLIB server function without storing lyrics or claiming catalog licensing.
 - WASM binaries are URL-loaded only after a user gesture, never imported into source; oversized binaries use hosted asset pointers under public/wasm with the version-matched loader, keeping deployment bundles and repository files within platform limits.
 - Multi-note transcription uses Basic Pitch in a terminable CPU worker with locally served model files; retain single-melody mode for faster lightweight analysis and never treat inferred notes as instrument identification.

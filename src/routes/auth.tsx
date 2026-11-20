@@ -51,7 +51,7 @@ function AuthPage() {
     <AppShell>
       <div className="mx-auto max-w-sm">
         <h1 className="font-display text-2xl font-bold tracking-wider text-chrome">{mode === "in" ? "SIGN IN" : "CREATE ACCOUNT"}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Keep your identified songs and favorites on every device. Songs already saved here move into your account.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Upload your own music and keep it with your identified songs and favorites on every device. Identified songs already saved here move into your account.</p>
         <div className="panel mt-6 space-y-3 p-5">
           <button type="button" onClick={() => social("google")}
             className="flex h-11 w-full items-center justify-center gap-[10px] rounded-full border border-[#747775] bg-[#FFFFFF] px-3 text-sm font-medium text-[#1F1F1F]">

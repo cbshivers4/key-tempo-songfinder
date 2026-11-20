@@ -18,8 +18,8 @@ export const Route = createFileRoute("/privacy")({
       <h2>What we collect and why</h2>
       <ul>
         <li><b>Account data</b> (email, login details, name if you sign in with Google) — to create and secure your account (contract).</li>
-        <li><b>Library data</b> (songs you identify, favorites) — to provide the service (contract).</li>
-        <li><b>Audio for identification</b> — short microphone clips are sent to our recognition provider to name the song and are not stored by us (contract). Files you analyze or vocode are processed in your browser and not uploaded.</li>
+        <li><b>Library data</b> (songs you identify, music you choose to upload, favorites) — to provide the service (contract). Uploaded music is stored privately for playback until you delete it or close your account.</li>
+        <li><b>Audio for identification</b> — short microphone clips are sent to our recognition provider to name the song and are not stored by us (contract). Files you analyze or vocode directly in those tools are processed in your browser and not uploaded.</li>
         <li><b>Usage data</b> (daily use counts, subscription status) — to apply free limits and Pro access (contract).</li>
         <li><b>Technical data</b> (IP address, device and browser info, logs) — for security and fraud prevention and to improve the service (legitimate interests).</li>
         <li><b>Support messages</b> — to answer you (legitimate interests).</li>
