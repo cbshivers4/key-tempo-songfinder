@@ -23,16 +23,18 @@ export type RecognizeResult =
 // Provider layer: add more providers (ACRCloud, etc.) here and pick by available secret.
 async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeResult> {
   const form = new FormData();
+  const filename = audio.type === "audio/wav" || audio.type === "audio/x-wav" ? "sample.wav" : "sample.webm";
   form.append("api_token", token);
-  form.append("file", audio, "sample.webm");
+  form.append("file", audio, filename);
   form.append("return", "apple_music,spotify");
   const res = await fetch("https://api.audd.io/", { method: "POST", body: form });
+  if (!res.ok) return { status: "error", message: "Song recognition is temporarily unavailable. Please try again later." };
   const json = (await res.json()) as any;
   if (json.status !== "success") {
     const raw = String(json.error?.error_message ?? "");
-    const message = /api_token/i.test(raw)
+    const message = /api_token|authorization failed/i.test(raw)
       ? "Song recognition isn't available right now: the music database key is invalid or expired."
-      : raw || "Recognition failed";
+      : "Song recognition failed. Try another part of the song, or try again later.";
     return { status: "error", message };
   }
   const r = json.result;
@@ -67,7 +69,7 @@ export const recognizeSong = createServerFn({ method: "POST" })
     return d;
   })
   .handler(async ({ data, context }): Promise<RecognizeResult> => {
-    const token = process.env["AUDD_API_TOKEN"];
+    const token = process.env["AUDD_API_TOKEN"]?.trim();
     if (!token) return { status: "not_configured" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { buildPaymentsEnv } = await import("@/lib/payments-env");
