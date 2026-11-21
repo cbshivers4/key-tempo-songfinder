@@ -41,7 +41,8 @@ export function encodeClipBase64(
   const mono = new Float32Array(frames);
   for (let channel = 0; channel < decoded.numberOfChannels; channel++) {
     const samples = decoded.getChannelData(channel);
-    for (let i = 0; i < frames; i++) mono[i] = (mono[i] ?? 0) + (samples[from + i] ?? 0) / decoded.numberOfChannels;
+    for (let i = 0; i < frames; i++)
+      mono[i] = (mono[i] ?? 0) + (samples[from + i] ?? 0) / decoded.numberOfChannels;
   }
   const bytes = new Uint8Array(encodeWav([mono], sampleRate));
   let binary = "";

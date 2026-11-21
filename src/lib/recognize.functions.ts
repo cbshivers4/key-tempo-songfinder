@@ -20,16 +20,44 @@ export type RecognizeResult =
   | { status: "limit" }
   | { status: "error"; message: string };
 
+type AudDResponse = {
+  status?: string;
+  error?: { error_message?: string };
+  result?: {
+    title?: string;
+    artist?: string;
+    album?: string;
+    release_date?: string;
+    song_link?: string;
+    spotify?: {
+      external_urls?: { spotify?: string };
+      duration_ms?: number;
+      album?: { images?: { url?: string }[] };
+    };
+    apple_music?: {
+      url?: string;
+      artwork?: { url?: string };
+      durationInMillis?: number;
+      genreNames?: string[];
+    };
+  } | null;
+};
+
 // Provider layer: add more providers (ACRCloud, etc.) here and pick by available secret.
 async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeResult> {
   const form = new FormData();
-  const filename = audio.type === "audio/wav" || audio.type === "audio/x-wav" ? "sample.wav" : "sample.webm";
+  const filename =
+    audio.type === "audio/wav" || audio.type === "audio/x-wav" ? "sample.wav" : "sample.webm";
   form.append("api_token", token);
   form.append("file", audio, filename);
   form.append("return", "apple_music,spotify");
   const res = await fetch("https://api.audd.io/", { method: "POST", body: form });
-  if (!res.ok) return { status: "error", message: "Song recognition is temporarily unavailable. Please try again later." };
-  const json = (await res.json()) as any;
+  if (!res.ok)
+    return {
+      status: "error",
+      message: "Song recognition is temporarily unavailable. Please try again later.",
+    };
+  const json = (await res.json()) as AudDResponse;
   if (json.status !== "success") {
     const raw = String(json.error?.error_message ?? "");
     const message = /api_token|authorization failed/i.test(raw)
@@ -38,23 +66,27 @@ async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeR
     return { status: "error", message };
   }
   const r = json.result;
-  if (!r) return { status: "no_match" };
+  if (!r?.title || !r.artist) return { status: "no_match" };
   const links: { label: string; url: string }[] = [];
   if (r.song_link) links.push({ label: "All platforms", url: r.song_link });
-  if (r.spotify?.external_urls?.spotify) links.push({ label: "Spotify", url: r.spotify.external_urls.spotify });
+  if (r.spotify?.external_urls?.spotify)
+    links.push({ label: "Spotify", url: r.spotify.external_urls.spotify });
   if (r.apple_music?.url) links.push({ label: "Apple Music", url: r.apple_music.url });
+  const artwork =
+    r.apple_music?.artwork?.url?.replace("{w}", "600").replace("{h}", "600") ??
+    r.spotify?.album?.images?.[0]?.url;
+  const durationMs = r.spotify?.duration_ms ?? r.apple_music?.durationInMillis;
+  const genres = r.apple_music?.genreNames;
   return {
     status: "match",
     song: {
       title: r.title,
       artist: r.artist,
-      album: r.album,
-      releaseDate: r.release_date,
-      artwork:
-        r.apple_music?.artwork?.url?.replace("{w}", "600").replace("{h}", "600") ??
-        r.spotify?.album?.images?.[0]?.url,
-      durationMs: r.spotify?.duration_ms ?? r.apple_music?.durationInMillis,
-      genres: r.apple_music?.genreNames,
+      ...(r.album ? { album: r.album } : {}),
+      ...(r.release_date ? { releaseDate: r.release_date } : {}),
+      ...(artwork ? { artwork } : {}),
+      ...(durationMs !== undefined ? { durationMs } : {}),
+      ...(genres?.length ? { genres } : {}),
       links,
       provider: "AudD",
     },
@@ -65,7 +97,8 @@ async function recognizeWithAudD(token: string, audio: Blob): Promise<RecognizeR
 export const recognizeSong = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { audioBase64: string; mime: string }) => {
-    if (typeof d?.audioBase64 !== "string" || d.audioBase64.length > 8_000_000) throw new Error("Invalid audio");
+    if (typeof d?.audioBase64 !== "string" || d.audioBase64.length > 8_000_000)
+      throw new Error("Invalid audio");
     return d;
   })
   .handler(async ({ data, context }): Promise<RecognizeResult> => {
@@ -73,7 +106,10 @@ export const recognizeSong = createServerFn({ method: "POST" })
     if (!token) return { status: "not_configured" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { buildPaymentsEnv } = await import("@/lib/payments-env");
-    const { data: remaining, error } = await supabaseAdmin.rpc("consume_use_for", { _user: context.userId, check_env: buildPaymentsEnv() });
+    const { data: remaining, error } = await supabaseAdmin.rpc("consume_use_for", {
+      _user: context.userId,
+      check_env: buildPaymentsEnv(),
+    });
     if (error) return { status: "error", message: "Couldn't check your plan" };
     if (remaining === null) return { status: "limit" };
     try {

@@ -16,7 +16,12 @@ import { recognizeSong, type RecognizedSong } from "@/lib/recognize.functions";
 import { addToHistory } from "@/lib/history";
 import { useAuth } from "@/hooks/useAuth";
 import { UpgradeNotice } from "@/components/UpgradeNotice";
-import { MUSIC_ACCEPT, loadUploadedSongs, uploadedSongUrl, type UploadedSong } from "@/lib/my-music";
+import {
+  MUSIC_ACCEPT,
+  loadUploadedSongs,
+  uploadedSongUrl,
+  type UploadedSong,
+} from "@/lib/my-music";
 import {
   IDENTIFY_CLIP_SECONDS,
   clipStart,
@@ -45,14 +50,7 @@ export const Route = createFileRoute("/identify")({
 });
 
 type Phase =
-  | "idle"
-  | "listening"
-  | "searching"
-  | "match"
-  | "no_match"
-  | "not_configured"
-  | "limit"
-  | "error";
+  "idle" | "listening" | "searching" | "match" | "no_match" | "not_configured" | "limit" | "error";
 const SECONDS = 10;
 
 const formatTime = (seconds: number) =>
@@ -135,7 +133,8 @@ function Identify() {
         data.forEach((v, i) => {
           const x = (i / data.length) * c.width;
           const y = (v / 255) * c.height;
-          i ? g.lineTo(x, y) : g.moveTo(x, y);
+          if (i) g.lineTo(x, y);
+          else g.moveTo(x, y);
         });
         g.stroke();
       }
@@ -240,7 +239,8 @@ function Identify() {
   async function togglePreview() {
     const element = player.current;
     if (!element) return;
-    if (element.paused) await element.play().catch(() => setClipError("Your browser couldn't play this file."));
+    if (element.paused)
+      await element.play().catch(() => setClipError("Your browser couldn't play this file."));
     else element.pause();
   }
 
@@ -477,7 +477,10 @@ function Identify() {
                   </h2>
                   <ul className="mt-3 space-y-2">
                     {uploads.map((uploaded) => (
-                      <li key={uploaded.id} className="flex items-center gap-3 rounded-lg border p-3">
+                      <li
+                        key={uploaded.id}
+                        className="flex items-center gap-3 rounded-lg border p-3"
+                      >
                         <FileAudio className="h-4 w-4 shrink-0 text-primary" />
                         <div className="min-w-0 flex-1">
                           <div className="truncate text-sm font-bold">{uploaded.title}</div>
@@ -563,7 +566,9 @@ function Identify() {
             >
               ANALYZE THIS SONG
             </Link>
-            <p className="mt-1 text-xs text-muted-foreground">Upload a copy you own to analyze it.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Upload a copy you own to analyze it.
+            </p>
           </div>
         </div>
       )}
